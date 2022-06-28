@@ -6,7 +6,7 @@ import sqlite3 as sl
 
 con = sl.connect('/home/pioyar/rucio-client-venv/summer_project/duplicate_data.db')
 
-"""
+
 with con:
     con.execute("""
         CREATE TABLE USER (
@@ -20,7 +20,7 @@ with con:
             FileCreationTime INTEGER
         );
     """)
-"""
+
 
 sql = 'INSERT INTO USER (id, file, BatchID,ComputingElement,DataLocation,Scope,JobSubmissionTime,FileCreationTime) values(?, ?, ?, ?, ?, ?, ?, ?)'
 data = [
