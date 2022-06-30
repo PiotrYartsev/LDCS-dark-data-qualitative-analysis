@@ -15,10 +15,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
 
         add_file_number=[]
 
-        with con:
-            con.execute("""
-            ALTER TABLE USER
-                DROP COLUMN file_number;""")
+
         with con:
             con.execute("""
             DELETE FROM {}
