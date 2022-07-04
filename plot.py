@@ -9,7 +9,7 @@ import sqlite3 as sl
 
 from sqlalchemy import column
 
-con = sl.connect('duplicate_data.db')
+con = sl.connect('duplicate_data_2.db')
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
@@ -69,7 +69,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             return creation_time_place_list,creation_time_place_number_list
 
         
-        column="FileCreationTime"
+        column="JobSubmissionTime"
         time_1_list,time_2_list,time_no_problem=get_data(column)
 
         creation_time_place_list_lund, creation_time_place_number_lund_list=get_loacation_data(column,'lunarc')

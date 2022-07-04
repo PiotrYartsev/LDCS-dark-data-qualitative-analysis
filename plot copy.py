@@ -10,7 +10,7 @@ import sqlite3 as sl
 
 from sqlalchemy import column
 position_ult=[]
-column="FileCreationTime"
+#column="FileCreationTime"
 
 time_no_problem_ult_ult=[]
 
@@ -27,7 +27,7 @@ time_2_list_ult=[]
 postion_duplicate_ult=[]
 position_regular_ult=[]
 
-con = sl.connect('duplicate_data.db')
+con = sl.connect('duplicate_data_2.db')
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
@@ -89,7 +89,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             return creation_time_place_list,creation_time_place_number_list
 
         
-        column="FileCreationTime"
+        column="JobSubmissionTime"
         time_1_list,time_2_list,time_no_problem=get_data(column)
 
         creation_time_place_list_lund, creation_time_place_number_lund_list=get_loacation_data(column,'lunarc')
@@ -133,7 +133,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         plt.plot(time_2_list,postion_duplicate,".",label="Later duplicate", markersize=4,color="red")
         plt.plot(time_no_problem,position_regular,".",label="Not a duplicate", markersize=4,color="white")
         #plt.grid(linestyle='--',)
-        plt.title("Submission time of {}\n for early duplicate, late duplicate and not a duplicate file".format(row[0]),fontsize=20)
+        plt.title("{} time of {}\n for early duplicate, late duplicate and not a duplicate file".format(column,row[0]),fontsize=20)
         plt.xlabel('Time',fontsize=15)
         plt.ylabel('File number',   fontsize=15)
         plt.legend(loc='upper left',bbox_to_anchor=(1.05,1),fontsize=15)
@@ -167,14 +167,15 @@ time_all_1=[]
 time_all_2=[]
 count_all_1=[]
 count_all_2=[]
-print(len(time_1_list_ult))
+
 times_exist_1=list(set(time_1_list_ult))
-print(len(times_exist_1))
 
-print(len(time_2_list_ult))
+times_exist_1=sorted(times_exist_1)
+
+
 times_exist_2=list(set(time_2_list_ult))
-print(len(times_exist_2))
 
+times_exist_2=sorted(times_exist_2)
 for time in times_exist_1:
     count_all_1.append(time_1_list_ult.count(time))
     time_all_1.append(time)
@@ -182,16 +183,24 @@ for time in times_exist_2:
     count_all_2.append(time_2_list_ult.count(time))
     time_all_2.append(time)
 
+x = time_all_2
+y = count_all_2
 
-#plt.plot(creation_time_place_list_lund_ult,creation_time_place_number_lund_list_ult,"+",label="Created at Lund", markersize=6)
-#plt.plot(creation_time_place_list_slac_ult,creation_time_place_number_slac_list_ult,"*",label="Created at SLAC", markersize=6)
-#plt.plot(creation_time_place_list_uscb_ult,creation_time_place_number_uscb_list_ult,"o",label="Created at UCSB", markersize=6)
+window = 40
+average_y = []
+for ind in range(len(y) - window + 1):
+    average_y.append(np.mean(y[ind:ind+window]))
+for ind in range(window - 1):
+    average_y.insert(0, np.nan)
+plt.plot(creation_time_place_list_lund_ult,creation_time_place_number_lund_list_ult,"+",label="Created at Lund", markersize=6)
+plt.plot(creation_time_place_list_slac_ult,creation_time_place_number_slac_list_ult,"*",label="Created at SLAC", markersize=6)
+plt.plot(creation_time_place_list_uscb_ult,creation_time_place_number_uscb_list_ult,"p",label="Created at UCSB", markersize=6)
 
-plt.plot(times_exist_1,count_all_1,"*",label="Early duplicate", markersize=8,color="black")
-plt.plot(times_exist_2,count_all_2,"+",label="Later duplicate", markersize=8,color="red")
-#plt.plot(time_no_problem_ult_ult,position_regular_ult,".",label="Not a duplicate", markersize=4,color="white")
+plt.plot(times_exist_1,count_all_1,".",label="Early duplicate", markersize=8,color="black")
+plt.plot(times_exist_2,count_all_2,".",label="Later duplicate", markersize=8,color="red")
+plt.plot(time_no_problem_ult_ult,position_regular_ult,".",label="Not a duplicate", markersize=4,color="white")
 #plt.grid(linestyle='--',)
-plt.title("Submission time of {}\n for early duplicate, late duplicate and not a duplicate file".format(row[0]),fontsize=20)
+plt.title("{} of {}\n for early duplicate, late duplicate and not a duplicate file".format(column,row[0]),fontsize=20)
 plt.xlabel('Time',fontsize=15)
 plt.ylabel('File number',   fontsize=15)
 plt.legend(loc='upper left',bbox_to_anchor=(1.05,1),fontsize=15)
