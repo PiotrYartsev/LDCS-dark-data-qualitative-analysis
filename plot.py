@@ -9,7 +9,7 @@ import sqlite3 as sl
 
 from sqlalchemy import column
 
-con = sl.connect('duplicate_data_2.db')
+con = sl.connect('duplicate_data.db')
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
@@ -48,7 +48,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                             time_1_list.append(time1)
                             time_2_list.append(time2)
                     else:
-                        #print(number)
+                        #print(creation_time)
                         position_regular.append(number)
                         time_no_problem.append(creation_time[0][0])
             return time_1_list,time_2_list,time_no_problem
@@ -67,7 +67,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                 
                 creation_time_place_number_list.append(creation_time_place[n][1])
             return creation_time_place_list,creation_time_place_number_list
-
+        
         
         column="JobSubmissionTime"
         time_1_list,time_2_list,time_no_problem=get_data(column)
