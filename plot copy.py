@@ -23,6 +23,12 @@ creation_time_place_number_slac_list_ult=[]
 creation_time_place_list_uscb_ult=[]
 creation_time_place_number_uscb_list_ult=[]
 
+creation_time_place_list_not_at_rucio_ult=[]
+creation_time_place_number_not_at_rucio_list_ult=[]
+
+creation_time_place_list_caltech_ult=[]
+creation_time_place_number_caltech_list_ult=[]
+
 time_1_list_ult=[]
 time_2_list_ult=[]
 postion_duplicate_1_ult=[]
@@ -30,7 +36,7 @@ postion_duplicate_2_ult=[]
 
 position_regular_ult=[]
 
-con = sl.connect('C:\\Users\\MSI PC\\Desktop\\gitproj\\LDCS-dark-data-qualitative-analysis\\duplicate_data.db')
+con = sl.connect('duplicate_data_copy.db')
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
@@ -56,11 +62,12 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             else:
                 #print(max_file_number2)
                 for n in range(1,max_file_number2+1):
-                    print(n)
+                    
                     creation_time = con.execute("""
                     SELECT {},file_number,duplicate FROM {} WHERE duplicate = {};""".format(column,row[0],n), ()).fetchall()
-                    print(len(creation_time))
-                    print(creation_time)
+                    #print(n)
+                    #print(len(creation_time))
+                    #print(creation_time)
                     if len(creation_time)==0:
                         pass
                     else:
@@ -80,7 +87,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             if len(creation_time2)==0:
                     pass
             else:
-                #rint(creation_time2)
+                #print(len(creation_time2))
                 for k in range(len(creation_time2)):
                     position_regular.append(creation_time2[k][1])
                     
@@ -92,13 +99,18 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             
 
         def get_loacation_data(column,location):
-            creation_time_place=con.execute("""
+            if location=="Null":
+                creation_time_place=con.execute("""
+            SELECT {},file_number,ComputingElement FROM {} WHERE ComputingElement is Null;""".format(column,row[0]), ()).fetchall()
+                #print(len(creation_time_place))
+            else:
+                creation_time_place=con.execute("""
             SELECT {},file_number,ComputingElement FROM {} WHERE ComputingElement LIKE '%{}%';""".format(column,row[0],location), ()).fetchall()
 
             creation_time_place.sort(key=lambda x: x[1])
             creation_time_place_list=[]
             creation_time_place_number_list=[]
-            #print(creation_time_place[:5])
+            #print(creation_time_place[:1])
             for n in range(len(creation_time_place)):
                 creation_time_place_list.append(creation_time_place[n][0])
                 
@@ -107,13 +119,15 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             return creation_time_place_list,creation_time_place_number_list
 
         
-        column="FileCreationTime"
+        column="JobSubmissionTime"
         time_1_list,time_2_list,time_no_problem,postion_duplicate_1,postion_duplicate_2,position_regular=get_data(column)
         #print(len(time_1_list))
         creation_time_place_list_lund, creation_time_place_number_lund_list=get_loacation_data(column,'lunarc')
         creation_time_place_list_slac, creation_time_place_number_slac_list=get_loacation_data(column,'slac')
         creation_time_place_list_uscb, creation_time_place_number_uscb_list=get_loacation_data(column,'ucsb')
-        
+        creation_time_place_list_caltech, creation_time_place_number_caltech_list=get_loacation_data(column,'caltech')
+        creation_time_place_list_not_at_rucio, creation_time_place_number_not_at_rucio_list=get_loacation_data(column,'Null')
+
         position_ult.extend(position)
         time_1_list_ult.extend(time_1_list)
         time_2_list_ult.extend(time_2_list)
@@ -137,25 +151,54 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             creation_time_place_number_uscb_list_ult.extend(creation_time_place_number_uscb_list)
         except:
             pass
-        break        
-print(len(creation_time_place_list_uscb_ult)+len(creation_time_place_list_slac_ult)+len(creation_time_place_list_lund_ult))
+        try:
+            creation_time_place_list_not_at_rucio_ult.extend(creation_time_place_list_not_at_rucio)
+            creation_time_place_number_not_at_rucio_list_ult.extend(creation_time_place_number_not_at_rucio_list)
+        except:
+            pass
+        try:
+            creation_time_place_list_caltech_ult.extend(creation_time_place_list_caltech)
+            creation_time_place_number_caltech_list_ult.extend(creation_time_place_number_caltech_list)
+        except:
+            pass
+                
+"""
+print("length of location")
+print(len(creation_time_place_list_uscb_ult)+len(creation_time_place_list_slac_ult)+len(creation_time_place_list_lund_ult)+len(creation_time_place_list_not_at_rucio_ult)+len(creation_time_place_list_caltech_ult))
 
 
+print("uscb")
+print(len(creation_time_place_list_uscb_ult))
+print("slac")
+print(len(creation_time_place_list_slac_ult))
+print("lund")
+print(len(creation_time_place_list_lund_ult))
+print("Not at Rucio")
+print(len(creation_time_place_list_not_at_rucio_ult))
 
-#print(len(creation_time_place_list_uscb_ult))
-#print(len(creation_time_place_list_slac_ult))
-#print(len(creation_time_place_list_lund_ult))
+print("length of duplicates and normals")
 
 print(len(time_1_list_ult)+len(time_2_list_ult)+len(time_no_problem_ult_ult))
-
+"""
+"""
+print("number of first duplicates")
 print(len(time_1_list))
-print(1561)
+print("number of first duplicates we expect")
 
+print(829)
+
+print("number of second duplicates")
 print(len(time_2_list))
-print(4899-1561-91)
+print("number of second duplicates we expect")
 
-len(time_no_problem)
-print(91)
+print(5509-829-3568)
+print("number of not a  duplicates")
+
+print(len(time_no_problem))
+print("number of not a  duplicates we expect")
+
+print(3568)
+"""
 import collections
 #print(time_no_problem_ult_ult[:5])
 
@@ -187,15 +230,19 @@ for time in times_exist_2:
 plt.plot(creation_time_place_list_lund_ult,creation_time_place_number_lund_list_ult,"+",label="Created at Lund", markersize=10)
 plt.plot(creation_time_place_list_slac_ult,creation_time_place_number_slac_list_ult,"*",label="Created at SLAC", markersize=10)
 plt.plot(creation_time_place_list_uscb_ult,creation_time_place_number_uscb_list_ult,"s",label="Created at UCSB", markersize=10)
+plt.plot(creation_time_place_list_caltech_ult,creation_time_place_number_caltech_list_ult,"o",label="Created at Caltech", markersize=10)
+plt.plot(creation_time_place_list_not_at_rucio_ult,creation_time_place_number_not_at_rucio_list_ult,"x",label="Not at Rucio", markersize=10)
+
+
 
 plt.plot(time_1_list_ult,postion_duplicate_1_ult,".",label="Early duplicate", markersize=6,color="black")
-plt.plot(time_2_list_ult,postion_duplicate_2_ult,".",label="Later duplicate", markersize=6,color="red")
+plt.plot(time_2_list_ult,postion_duplicate_2_ult,".",label="Later duplicates", markersize=6,color="red")
 plt.plot(time_no_problem_ult_ult,position_regular_ult,".",label="Not a duplicate", markersize=6,color="white")
 #plt.grid(linestyle='--',)
-plt.title("{} of {}\n for early duplicate, late duplicate and not a duplicate file".format(column,row[0]),fontsize=20)
+plt.title("{} for early duplicate,\n late duplicate and not a duplicate files".format(column),fontsize=20)
 plt.xlabel('Time',fontsize=15)
 plt.ylabel('File number',   fontsize=15)
-plt.legend(loc='upper left',bbox_to_anchor=(1.05,1),fontsize=15)
+plt.legend(loc='upper left',bbox_to_anchor=(1,1),fontsize=15)
 #plt.ylim(0)
 #plt.xlim(8500)
 manager = plt.get_current_fig_manager()

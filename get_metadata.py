@@ -4,7 +4,7 @@ from datetime import datetime
 from tqdm import *
 import sqlite3 as sl
 
-con = sl.connect('/home/pioyar/rucio-client-venv/summer_project/duplicate_data.db')
+con = sl.connect('duplicate_data.db')
 
 
 with con:
