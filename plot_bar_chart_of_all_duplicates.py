@@ -31,6 +31,8 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                 data = con.execute("SELECT ComputingElement FROM {} WHERE duplicate is {}".format(row[0],i)).fetchall()
                 #print(len(data))
                 for rows1 in data:
+                    if rows1[0]==None:
+                        pass
                     if not rows1[0]==None:
                         location=str(rows1[0]).replace(" ","")
                     else:

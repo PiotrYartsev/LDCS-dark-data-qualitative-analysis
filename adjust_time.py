@@ -5,7 +5,7 @@ from datetime import datetime
 
 import sqlite3 as sl
 
-con = sl.connect('duplicate_data_copy.db')
+con = sl.connect('duplicate_data_5_copy.db')
 
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
@@ -23,12 +23,15 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             pass
         else:
             for rows in data:
-                rowss=rows[0].replace("  ","")
-                try:
-                    times1=time.mktime(datetime.strptime(rowss, " %Y-%m-%d %H:%M:%S").timetuple())
-                except:
-                    times1=time.mktime(datetime.strptime(rowss, "%Y-%m-%d %H:%M:%S").timetuple())
-                creation_time_place_list.append(times1)
+                if rows[0]==None:
+                    pass
+                else:
+                    rowss=rows[0].replace("  ","")
+                    try:
+                        times1=time.mktime(datetime.strptime(rowss, " %Y-%m-%d %H:%M:%S").timetuple())
+                    except:
+                        times1=time.mktime(datetime.strptime(rowss, "%Y-%m-%d %H:%M:%S").timetuple())
+                    creation_time_place_list.append(times1)
             with con:
                 con.execute("""
                 ALTER TABLE {}
