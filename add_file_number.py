@@ -5,7 +5,7 @@ from datetime import datetime
 
 import sqlite3 as sl
 
-con = sl.connect('duplicate_data_5_copy.db')
+con = sl.connect('SLAC_mc20_2.db')
 
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
@@ -52,5 +52,5 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                 for n in range(len(add_file_number_2)):
                     
                     sql="update {} set file_number=({}) where id={};".format(row[0],add_file_number_2[n],n+1)
-                    print(sql)
+                    #print(sql)
                     con.execute(sql)

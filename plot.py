@@ -9,7 +9,7 @@ import sqlite3 as sl
 
 from sqlalchemy import column
 
-con = sl.connect('duplicate_data.db')
+con = sl.connect('SLAC_mc20_2.db')
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
