@@ -56,7 +56,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         position_regular=[]
         def get_data(column):
             
-            max_file_number2 = 5
+            max_file_number2 = 10
             if max_file_number2==None:
                 pass
             else:
@@ -213,12 +213,12 @@ count_all_2=[]
 
 times_exist_1=list(set(time_1_list_ult))
 
-times_exist_1=sorted(times_exist_1)
+#times_exist_1=sorted(times_exist_1)
 
 
 times_exist_2=list(set(time_2_list_ult))
 
-times_exist_2=sorted(times_exist_2)
+#times_exist_2=sorted(times_exist_2)
 for time in times_exist_1:
     count_all_1.append(time_1_list_ult.count(time))
     time_all_1.append(time)

@@ -12,7 +12,7 @@ from sqlalchemy import column
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
-con = sl.connect('duplicate_data.db')
+con = sl.connect('SLAC_mc20_2.db')
 location_use=[]
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
@@ -76,13 +76,13 @@ for i in duplicate_1:
         else:
             string_to_write=str(i)+'th file'
         if string_to_write in duplicate_2:
-            duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
-            #duplicate_2[string_to_write].append(number_j)
+            #duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
+            duplicate_2[string_to_write].append(number_j)
         else:
             duplicate_2[string_to_write]=[]
-            #duplicate_2[string_to_write].append(number_j)
+            duplicate_2[string_to_write].append(number_j)
            
-            duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
+            #duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
             
 
 
