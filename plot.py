@@ -6,6 +6,7 @@ from matplotlib.ticker import MultipleLocator
 from datetime import datetime
 import os
 import sqlite3 as sl
+from tqdm import *
 
 from sqlalchemy import column
 
