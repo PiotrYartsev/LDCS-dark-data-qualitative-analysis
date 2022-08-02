@@ -1,5 +1,2 @@
-duplicate_data.db
-duplicate_data_copy.db
-duplicate_data.db
-duplicate_data_2.db
-duplicate_data_3.db
+*.db
+
