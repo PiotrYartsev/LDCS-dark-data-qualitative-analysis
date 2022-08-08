@@ -36,7 +36,7 @@ postion_duplicate_2_ult=[]
 
 position_regular_ult=[]
 
-con = sl.connect('SLAC_mc20_2.db')
+con = sl.connect('Lund_all_not_missing.db')
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
@@ -119,7 +119,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             return creation_time_place_list,creation_time_place_number_list
 
         
-        column="JobSubmissionTime"
+        column="FileCreationtime"
         time_1_list,time_2_list,time_no_problem,postion_duplicate_1,postion_duplicate_2,position_regular=get_data(column)
         #print(len(time_1_list))
         creation_time_place_list_lund, creation_time_place_number_lund_list=get_loacation_data(column,'lunarc')
@@ -227,21 +227,27 @@ for time in times_exist_2:
     time_all_2.append(time)
 
 
-plt.plot(creation_time_place_list_lund_ult,creation_time_place_number_lund_list_ult,"+",label="Created at Lund", markersize=10)
-plt.plot(creation_time_place_list_slac_ult,creation_time_place_number_slac_list_ult,"*",label="Created at SLAC", markersize=10)
-plt.plot(creation_time_place_list_uscb_ult,creation_time_place_number_uscb_list_ult,"s",label="Created at UCSB", markersize=10)
-plt.plot(creation_time_place_list_caltech_ult,creation_time_place_number_caltech_list_ult,"o",label="Created at Caltech", markersize=10)
-plt.plot(creation_time_place_list_not_at_rucio_ult,creation_time_place_number_not_at_rucio_list_ult,"x",label="Not at Rucio", markersize=10)
+#plt.plot(creation_time_place_list_lund_ult,creation_time_place_number_lund_list_ult,"+",label="Created at Lund", markersize=10)
+#plt.plot(creation_time_place_list_slac_ult,creation_time_place_number_slac_list_ult,"*",label="Created at SLAC", markersize=10)
+#plt.plot(creation_time_place_list_uscb_ult,creation_time_place_number_uscb_list_ult,"s",label="Created at UCSB", markersize=10)
+#plt.plot(creation_time_place_list_caltech_ult,creation_time_place_number_caltech_list_ult,"o",label="Created at Caltech", markersize=10)
+#plt.plot(creation_time_place_list_not_at_rucio_ult,creation_time_place_number_not_at_rucio_list_ult,"x",label="Not at Rucio", markersize=10)
 
-
-
+"""
+for (x,y) in zip(time_1_list_ult,postion_duplicate_1_ult):
+                plt.text(x, y, str(1), color="black", fontsize=12)
+for (x,y) in zip(time_2_list_ult,postion_duplicate_2_ult):
+                plt.text(x, y, str(2), color="black", fontsize=12)
+for (x,y) in zip(time_no_problem_ult_ult,position_regular_ult):
+                plt.text(x, y, str(0), color="black", fontsize=12)
+"""
 plt.plot(time_1_list_ult,postion_duplicate_1_ult,".",label="Early duplicate", markersize=6,color="black")
 plt.plot(time_2_list_ult,postion_duplicate_2_ult,".",label="Later duplicates", markersize=6,color="red")
-plt.plot(time_no_problem_ult_ult,position_regular_ult,".",label="Not a duplicate", markersize=6,color="white")
-#plt.grid(linestyle='--',)
+#plt.plot(time_no_problem_ult_ult,position_regular_ult,".",label="Not a duplicate", markersize=6,color="white")
+plt.grid(linestyle='--',)
 plt.title("{} for early duplicate,\n late duplicate and not a duplicate files".format(column),fontsize=20)
 plt.xlabel('Time',fontsize=15)
-plt.ylabel('File number',   fontsize=15)
+plt.ylabel('File number', fontsize=15)
 plt.legend(loc='upper left',bbox_to_anchor=(1,1),fontsize=15)
 #plt.ylim(0)
 #plt.xlim(8500)

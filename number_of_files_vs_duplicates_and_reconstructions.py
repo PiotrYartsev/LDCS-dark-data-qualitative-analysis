@@ -13,7 +13,7 @@ from sympy import linsolve
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
-con = sl.connect('duplicate_data.db')
+con = sl.connect('Lund_all_not_missing.db')
 location_use=[]
 
 
@@ -70,8 +70,8 @@ filenumberuplicate= [x for _,x in sorted(zip(lengthoftable,filenumberuplicate))]
 lengthoftable=(sorted(lengthoftable))
 
 
-print(filenumberuplicate)
-print(lengthoftable)
+#print(filenumberuplicate)
+#print(lengthoftable)
 """
 for i in range(len(splits)):
     number=float(splits[i])
