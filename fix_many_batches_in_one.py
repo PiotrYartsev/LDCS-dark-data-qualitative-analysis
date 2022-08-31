@@ -6,21 +6,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import MultipleLocator
 from datetime import datetime
-import os
-import sqlite3 as sl
+
+
 from tqdm import *
-import os
-from zlib import adler32
-from datetime import datetime
-from tqdm import *
-import sqlite3 as sl
-import threading
-import itertools 
+
+
+
 from subprocess import PIPE, Popen
 import os
 from zlib import adler32
 from datetime import datetime
-from tqdm import *
 import sqlite3 as sl
 import threading
 import itertools 
@@ -33,55 +28,81 @@ from sqlalchemy import column
 
 def fix_many_batches_in_one(dataset):
     con = sl.connect(dataset, check_same_thread=False)
+
+    #Retrive all tables from the database
     all_batches=con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall()
     all_batches=[a[0] for a in all_batches]
     for row in all_batches:
+        #If thea table is the table of tables, skip it
         if row == 'sqlite_sequence':
             pass
         else:
             data={}
-            print("          "+row)
+            None_list=[]
+            print("          "+row+"\n")
+            #Retrive all the batches from the table
             batches=con.execute("Select BatchId from %s" % row).fetchall()
             batches=list(set(batches))
             batches=[a[0] for a in batches]
             
+
             if None in batches:
                 batches.remove(None)
-            #print("          "+batches)
-            stuff_to_add_to_new_batch=con.execute("Select file,BatchID,ComputingElement,DataLocation,Scope,FileCreationTime,IsRecon,JobSubmissionTime from {};".format(row)).fetchall()
+           
+            
+            #sheck if there is more then one batch
+
             if len(batches)>1:
+                #Retrive all the data from the table
+                stuff_to_add_to_new_batch=con.execute("Select file,BatchID,ComputingElement,DataLocation,Scope,FileCreationTime,IsRecon,JobSubmissionTime from {};".format(row)).fetchall()
                 print("          "+"More than one batch")
-                #con.execute("DELETE FROM {} WHERE BatchId = Null;")
+                
                 for batch in batches:
-                    #stuff_to_add_to_new_batch=con.execute("Select * from {} where BatchId = {};".format(row,batch)).fetchall()
-                    
                     for n in range(len(stuff_to_add_to_new_batch)):
                         if batch in stuff_to_add_to_new_batch[n]:
                             if batch in data:
                                 data[batch].append(stuff_to_add_to_new_batch[n])
                             else:
                                 data[batch]=[stuff_to_add_to_new_batch[n]]
+                BactH_is_none=con.execute("Select file,BatchID,ComputingElement,DataLocation,Scope,FileCreationTime,IsRecon,JobSubmissionTime from {} where BatchID = Null;".format(row)).fetchall()
+                
+                for n in range(len(BactH_is_none)):
+                        None_list.append(BactH_is_none[n])
+                        
+                filename_for_batch={}
+                """
+                for batch in data:
+                    file=(data[batch][0][0])
+                    file=file.split("_")[:-2]
+                    batch3=batch.replace(' ','')
+                    batch3=batch3.replace('.','')
+                    batch3=batch3.replace('_','')
+                    batch3=batch3.replace('-','')
+                    file="_".join(file)
+                    if file in data:
+                        filename_for_batch[file].append(batch3)
+                    else:
+                        filename_for_batch[file]=[batch3]"""
                 for batch2 in data:
+
                     data2=data[batch2]
                     batch2=batch2.replace(' ','')
                     batch2=batch2.replace('.','')
                     batch2=batch2.replace('_','')
                     batch2=batch2.replace('-','')
-                    #print("          "+batch2[0])
                     if batch2[0].isnumeric():
-                        #print("          "+"True")
                         batch2="A"+batch2
-                    print("          "+"Sub-batch: {}".format(batch2))
-                    #print("          "+batch2)
-                    
-                    if batch2 in all_batches:
-                        print("          "+"Table already exists")
+                    print("                    "+"Sub-batch: {}".format(batch2))
+                    all_batches2=con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall()
+                    all_batches2=[a[0] for a in all_batches2]
+                    if batch2 in all_batches2:
+                        print("                    "+"Table already exists")
                         max_id=con.execute("Select MAX(id) from {}".format(batch2)).fetchone()[0]
                         if max_id is None:
                             max_id=0
                         
                     else:
-                        print("          "+"Table does not exist")
+                        print("                    "+"Table does not exist")
                         max_id=0
                         con.execute("""
                             CREATE TABLE {} (
@@ -96,21 +117,37 @@ def fix_many_batches_in_one(dataset):
                                 JobSubmissionTime INTEGER
                             );
                         """.format(batch2))
+                    test={}
+                    for n in range(len(data2)):
+                        if data2[n][1] in test:
+                            test[data2[n][0]].append(n)
+                        else:
+                            test[data2[n][0]]=[n]
+                    #print(len(data3))
+                    data_test=[]     
+                    for key in test:
+                        #print(key)
+                        #print(data2[test[key]])
+                        data_test.append(data2[test[key][0]])
+                    
                     data3=[]
-                    for a in range(len(data2)):
-                        #print("          "+(data2[a]))
-                        data3.append((max_id+a+1,data2[a][0],data2[a][1],data2[a][2],data2[a][3],data2[a][4],data2[a][5],data2[a][6],data2[a][7]))
-                    data2=data3
-                    #print("          "+data2[0])
+                    if len(data2)!=len(data_test):
+                        print("                    "+len(test))
+                        print("                    "+"Different number of files",len(data2)," vs ",len(data_test))
+                        
+                    for a in range(len(data_test)):
+                        data3.append((max_id+a+1,data_test[a][0],data_test[a][1],data_test[a][2],data_test[a][3],data_test[a][4],data_test[a][5],data_test[a][6],data_test[a][7]))
+
                     sql = 'INSERT INTO {} (id, file, BatchID,ComputingElement,DataLocation,Scope,FileCreationTime,IsRecon,JobSubmissionTime) values(?, ?, ?, ?, ?, ?, ?, ?, ?)'.format(batch2)
-                    
-                    
-                    print("          "+"Wrtiting to table {}".format(batch2))
+                    print("                    "+"Wrtiting to table {}".format(batch2))
                     with con:
-                        con.executemany(sql, data2)
-                    print("          "+"Done")
-                print("          "+"Deleting old table {}".format(row))
+                        con.executemany(sql, data3)
+
+                    print("                    "+"Done\n")
+                print("                    "+"Deleting old table {}".format(row))
                 con.execute("DROP TABLE {}".format(row))
-                print("          "+"\n\n")
+                print("                    "+"\n")
             else:
-                print("          "+"No extra batches\n\n")
+                pass
+                print("          "+"No extra batches\n")
+        

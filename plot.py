@@ -9,8 +9,8 @@ import sqlite3 as sl
 from tqdm import *
 
 from sqlalchemy import column
-
-con = sl.connect('Lund_all_not_missing.db')
+name='SLAC_mc20_2.db'
+con = sl.connect(name)
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
@@ -28,17 +28,43 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         time_3_list=[]
         time_4_list=[]
         time_5_list=[]
+        time_6_list=[]
+        time_7_list=[]
+        time_8_list=[]
+        time_9_list=[]
+        time_10_list=[]
+        time_11_list=[]
+        time_12_list=[]
+        time_13_list=[]
+        time_14_list=[]
+        time_15_list=[]
+        time_16_list=[]
+
 
         postion_duplicate_1=[]
         postion_duplicate_2=[]
         postion_duplicate_3=[]
         postion_duplicate_4=[]
         postion_duplicate_5=[]
+        postion_duplicate_6=[]
+        postion_duplicate_7=[]
+        postion_duplicate_8=[]
+        postion_duplicate_9=[]
+        postion_duplicate_10=[]
+        postion_duplicate_11=[]
+        postion_duplicate_12=[]
+        postion_duplicate_13=[]
+        postion_duplicate_14=[]
+        postion_duplicate_15=[]
+        postion_duplicate_16=[]
+
+
+        
 
         position_regular=[]
         def get_data(column):
-            
-            max_file_number2 = 10
+            #get max file number for each table
+            max_file_number2 = con.execute('SELECT MAX(duplicate) FROM {}'.format(row[0])).fetchone()[0]
             if max_file_number2==None:
                 pass
             else:
@@ -47,9 +73,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                     
                     creation_time = con.execute("""
                     SELECT {},file_number,duplicate FROM {} WHERE duplicate = {};""".format(column,row[0],n), ()).fetchall()
-                    #print(n)
-                    #print(len(creation_time))
-                    #print(creation_time)
+
                     if len(creation_time)==0:
                         pass
                     else:
@@ -73,6 +97,42 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                             if n==5:
                                 postion_duplicate_5.append(creation_time[k][1])
                                 time_5_list.append(time1)
+                            if n==6:
+                                postion_duplicate_6.append(creation_time[k][1])
+                                time_6_list.append(time1)
+                            if n==7:
+                                postion_duplicate_7.append(creation_time[k][1])
+                                time_7_list.append(time1)
+                            if n==8:
+                                postion_duplicate_8.append(creation_time[k][1])
+                                time_8_list.append(time1)
+                            if n==9:
+                                postion_duplicate_9.append(creation_time[k][1])
+                                time_9_list.append(time1)
+                            if n==10:
+                                postion_duplicate_10.append(creation_time[k][1])
+                                time_10_list.append(time1)
+                            if n==11:
+                                #print("11")
+                                postion_duplicate_11.append(creation_time[k][1])
+                                time_11_list.append(time1)
+                            if n==12:
+                                #print("12")
+                                postion_duplicate_12.append(creation_time[k][1])
+                                time_12_list.append(time1)
+                            if n==13:
+                                postion_duplicate_13.append(creation_time[k][1])
+                                time_13_list.append(time1)
+                            if n==14:
+                                postion_duplicate_14.append(creation_time[k][1])
+                                time_14_list.append(time1)
+                            if n==15:
+                                postion_duplicate_15.append(creation_time[k][1])
+                                time_15_list.append(time1)
+                            if n==16:
+                                postion_duplicate_16.append(creation_time[k][1])
+                                time_16_list.append(time1)
+                            
                             
                             
             creation_time2 = con.execute("""
@@ -87,8 +147,8 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                     
                     time_no_problem.append(creation_time2[k][0])
                     
-            return time_1_list,time_2_list,time_3_list,time_4_list,time_5_list, time_no_problem,postion_duplicate_1,postion_duplicate_2,postion_duplicate_3,postion_duplicate_4,postion_duplicate_5,position_regular
-        
+            return time_1_list,time_2_list,time_3_list,time_4_list,time_5_list,time_6_list,time_7_list,time_8_list,time_9_list,time_10_list,time_11_list,time_12_list,time_13_list,time_14_list,time_15_list,time_16_list,time_no_problem,postion_duplicate_1,postion_duplicate_2,postion_duplicate_3,postion_duplicate_4,postion_duplicate_5, postion_duplicate_6,postion_duplicate_7,postion_duplicate_8,postion_duplicate_9,postion_duplicate_10,postion_duplicate_11,postion_duplicate_12,postion_duplicate_13,postion_duplicate_14,postion_duplicate_15,postion_duplicate_16,position_regular
+
         def get_loacation_data(column,location):
             if location=="Null":
                 creation_time_place=con.execute("""
@@ -111,7 +171,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         
         
         column="FileCreationTime"
-        ttime_1_list,time_2_list,time_3_list,time_4_list,time_5_list, time_no_problem,postion_duplicate_1,postion_duplicate_2,postion_duplicate_3,postion_duplicate_4,postion_duplicate_5,position_regular=get_data(column)
+        time_1_list,time_2_list,time_3_list,time_4_list,time_5_list,time_6_list,time_7_list,time_8_list,time_9_list,time_10_list,time_11_list,time_12_list,time_13_list,time_14_list,time_15_list,time_16_list,time_no_problem,postion_duplicate_1,postion_duplicate_2,postion_duplicate_3,postion_duplicate_4,postion_duplicate_5, postion_duplicate_6,postion_duplicate_7,postion_duplicate_8,postion_duplicate_9,postion_duplicate_10,postion_duplicate_11,postion_duplicate_12,postion_duplicate_13,postion_duplicate_14,postion_duplicate_15,postion_duplicate_16,position_regular=get_data(column)
         #print(len(time_1_list))
         creation_time_place_list_lund, creation_time_place_number_lund_list=get_loacation_data(column,'lunarc')
         creation_time_place_list_slac, creation_time_place_number_slac_list=get_loacation_data(column,'slac')
@@ -119,17 +179,23 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         creation_time_place_list_caltech, creation_time_place_number_caltech_list=get_loacation_data(column,'caltech')
         creation_time_place_list_not_at_rucio, creation_time_place_number_not_at_rucio_list=get_loacation_data(column,'Null')
 
+        """
+        print("Time no problem",len(time_no_problem))
+        print("Time 1",len(time_1_list))
+        print("Time 2",len(time_2_list))
+        print("Time 3",len(time_3_list))
+        print("Time 4",len(time_4_list))
+        print("Time 5",len(time_5_list))"""
 
-        
-        print(len(time_1_list))
+
         if len(time_1_list)==0:
             pass
         else:
-            plt.plot(creation_time_place_list_lund,creation_time_place_number_lund_list,"+",label="Created at Lund", markersize=6)
-            plt.plot(creation_time_place_list_slac,creation_time_place_number_slac_list,"*",label="Created at SLAC", markersize=6)
-            plt.plot(creation_time_place_list_uscb,creation_time_place_number_uscb_list,"o",label="Created at UCSB", markersize=6)
-            plt.plot(creation_time_place_list_caltech,creation_time_place_number_caltech_list,"o",label="Created at CALTECH", markersize=6)
-            plt.plot(creation_time_place_list_not_at_rucio,creation_time_place_number_not_at_rucio_list,"o",label="Not in Rucio", markersize=6)
+            plt.plot(creation_time_place_list_lund,creation_time_place_number_lund_list,"+",label="Created at Lund", markersize=20)
+            plt.plot(creation_time_place_list_slac,creation_time_place_number_slac_list,"+",label="Created at SLAC", markersize=20)
+            plt.plot(creation_time_place_list_uscb,creation_time_place_number_uscb_list,"+",label="Created at UCSB", markersize=20)
+            plt.plot(creation_time_place_list_caltech,creation_time_place_number_caltech_list,"+",label="Created at CALTECH", markersize=20)
+            plt.plot(creation_time_place_list_not_at_rucio,creation_time_place_number_not_at_rucio_list,"o",label="Not in Rucio", markersize=12)
 
 
             """
@@ -138,15 +204,44 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             for (x,y) in zip(time_2_list_ult,postion_duplicate_2_ult):
                             plt.text(x, y, str(2), color="black", fontsize=12)
             for (x,y) in zip(time_no_problem_ult_ult,position_regular_ult):
-                            plt.text(x, y, str(0), color="black", fontsize=12)
-            """
-            plt.plot(time_1_list,postion_duplicate_1,".",label="1st duplicate", markersize=6,color="black")
-            plt.plot(time_2_list,postion_duplicate_2,".",label="2nd duplicates", markersize=6,color="red")
-            plt.plot(time_3_list,postion_duplicate_3,".",label="3rd duplicates", markersize=6,color="green")
-            plt.plot(time_4_list,postion_duplicate_4,".",label="4th duplicates", markersize=6,color="blue")
-            plt.plot(time_5_list,postion_duplicate_5,".",label="5th duplicates", markersize=6,color="purple")
+                            plt.text(x, y, str(0), color="black", fontsize=12)"""
+            if len(time_1_list)!=0:
+                plt.plot(time_1_list,postion_duplicate_1,".",label="1st duplicate", markersize=10)
+            if len(time_2_list)!=0:
+                plt.plot(time_2_list,postion_duplicate_2,".",label="2nd duplicates", markersize=10)
+            if len(time_3_list)!=0:
+                plt.plot(time_3_list,postion_duplicate_3,".",label="3rd duplicates", markersize=10)
+            if len(time_4_list)!=0:
+                plt.plot(time_4_list,postion_duplicate_4,".",label="4th duplicates", markersize=10)
+            if len(time_5_list)!=0:
+                plt.plot(time_5_list,postion_duplicate_5,".",label="5th duplicates", markersize=10)
+            if len(time_6_list)!=0:
+                plt.plot(time_6_list,postion_duplicate_6,".",label="6th duplicates", markersize=10)
+            if len(time_7_list)!=0:
+                plt.plot(time_7_list,postion_duplicate_7,".",label="7th duplicates", markersize=10)
+            if len(time_8_list)!=0:
+                plt.plot(time_8_list,postion_duplicate_8,".",label="8th duplicates", markersize=10)
+            if len(time_9_list)!=0:
+                plt.plot(time_9_list,postion_duplicate_9,".",label="9th duplicates", markersize=10)
+            if len(time_10_list)!=0:
+                plt.plot(time_10_list,postion_duplicate_10,".",label="10th duplicates", markersize=10)
+            #print(len(time_11_list))
+            if len(time_11_list)!=0:
+                plt.plot(time_11_list,postion_duplicate_11,".",label="11th duplicates", markersize=10)
+            #print(len(time_12_list))
+            if len(time_12_list)!=0:
+                plt.plot(time_12_list,postion_duplicate_12,".",label="12th duplicates", markersize=10)
+            if len(time_13_list)!=0:
+                plt.plot(time_13_list,postion_duplicate_13,".",label="13th duplicates", markersize=10)
+            if len(time_14_list)!=0:
+                plt.plot(time_14_list,postion_duplicate_14,".",label="14th duplicates", markersize=10)
+            if len(time_15_list)!=0:
+                plt.plot(time_15_list,postion_duplicate_15,".",label="15th duplicates", markersize=10)
+            if len(time_16_list)!=0:
+                plt.plot(time_16_list,postion_duplicate_16,".",label="16th duplicates", markersize=10)
+            if len(time_no_problem)!=0:
+                plt.plot(time_no_problem,position_regular,".",label="Not a duplicate", markersize=10,color="white")
 
-            plt.plot(time_no_problem,position_regular,".",label="Not a duplicate", markersize=6,color="white")
             plt.grid(linestyle='--',)
             plt.title("Submission time of {}\n for early duplicate, late duplicate and not a duplicate file".format(row[0]),fontsize=20)
             plt.xlabel('Time',fontsize=15)
@@ -159,8 +254,8 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             #plt.show()
             figure = plt.gcf()
             figure.set_size_inches(19, 10)
-            if not os.path.exists("C:\\Users\\MSI PC\\Desktop\\project\\pictures2\\{}".format(column)):
-                os.makedirs("C:\\Users\\MSI PC\\Desktop\\project\\pictures2\\{}".format(column))
-            plt.savefig("C:\\Users\\MSI PC\\Desktop\\project\\pictures2\\{}\\{}.png".format(column,row[0]),bbox_inches='tight', dpi=100)
+            if not os.path.exists("C:\\Users\\MSI PC\\Desktop\\project\\{}\\{}".format(name,column)):
+                os.makedirs("C:\\Users\\MSI PC\\Desktop\\project\\{}\\{}".format(name,column))
+            plt.savefig("C:\\Users\\MSI PC\\Desktop\\project\\{}\\{}\\{}.png".format(name,column,row[0]),bbox_inches='tight', dpi=100)
             plt.close()
             
