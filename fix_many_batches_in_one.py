@@ -92,10 +92,15 @@ def fix_many_batches_in_one(dataset):
                     batch2=batch2.replace('-','')
                     if batch2[0].isnumeric():
                         batch2="A"+batch2
+                    
+                    if batch2.lower()==row:
+                        
+                        batch2="new_"+batch2
                     print("                    "+"Sub-batch: {}".format(batch2))
                     all_batches2=con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall()
-                    all_batches2=[a[0] for a in all_batches2]
-                    if batch2 in all_batches2:
+                    all_batches2=[a[0].lower() for a in all_batches2]
+                    
+                    if batch2.lower() in all_batches2:
                         print("                    "+"Table already exists")
                         max_id=con.execute("Select MAX(id) from {}".format(batch2)).fetchone()[0]
                         if max_id is None:

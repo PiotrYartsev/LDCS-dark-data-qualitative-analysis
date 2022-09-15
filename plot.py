@@ -9,7 +9,7 @@ import sqlite3 as sl
 from tqdm import *
 
 from sqlalchemy import column
-name='SLAC_mc20_2.db'
+name='Lund_GRID_all.db'
 con = sl.connect(name)
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
@@ -254,8 +254,9 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             #plt.show()
             figure = plt.gcf()
             figure.set_size_inches(19, 10)
-            if not os.path.exists("C:\\Users\\MSI PC\\Desktop\\project\\{}\\{}".format(name,column)):
-                os.makedirs("C:\\Users\\MSI PC\\Desktop\\project\\{}\\{}".format(name,column))
-            plt.savefig("C:\\Users\\MSI PC\\Desktop\\project\\{}\\{}\\{}.png".format(name,column,row[0]),bbox_inches='tight', dpi=100)
+            name=name.replace(".db","")
+            if not os.path.exists("figures/{}/{}".format(name,column)):
+                os.makedirs("figures/{}/{}".format(name,column))
+            plt.savefig("figures/{}/{}/{}.png".format(name,column,row[0]),bbox_inches='tight', dpi=100)
             plt.close()
             

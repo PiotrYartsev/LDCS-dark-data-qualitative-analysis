@@ -4,7 +4,7 @@ import fix_many_batches_in_one
 import add_file_number
 import os
 import shutil
-database='Lund_all.db'
+database='Lund_GRID_all.db'
 
 term_size = os.get_terminal_size()
 
