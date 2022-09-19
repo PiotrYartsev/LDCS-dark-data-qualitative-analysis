@@ -1,28 +1,15 @@
-from itertools import count
 from logging import raiseExceptions
 from tokenize import Number
-from matplotlib.axis import YAxis
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.ticker import MultipleLocator
-from datetime import datetime
-
 
 from tqdm import *
 
-
-
 from subprocess import PIPE, Popen
-import os
+
 from zlib import adler32
-from datetime import datetime
 import sqlite3 as sl
-import threading
-import itertools 
+
 from subprocess import PIPE, Popen
 
-
-from sqlalchemy import column
 
 
 
@@ -70,19 +57,7 @@ def fix_many_batches_in_one(dataset):
                         None_list.append(BactH_is_none[n])
                         
                 filename_for_batch={}
-                """
-                for batch in data:
-                    file=(data[batch][0][0])
-                    file=file.split("_")[:-2]
-                    batch3=batch.replace(' ','')
-                    batch3=batch3.replace('.','')
-                    batch3=batch3.replace('_','')
-                    batch3=batch3.replace('-','')
-                    file="_".join(file)
-                    if file in data:
-                        filename_for_batch[file].append(batch3)
-                    else:
-                        filename_for_batch[file]=[batch3]"""
+
                 for batch2 in data:
 
                     data2=data[batch2]

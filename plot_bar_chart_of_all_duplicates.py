@@ -1,4 +1,3 @@
-from multiprocessing.reduction import duplicate
 from tokenize import Number
 from matplotlib.axis import YAxis
 import matplotlib.pyplot as plt
@@ -12,7 +11,7 @@ from sqlalchemy import column
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
-con = sl.connect('Lund_all_not_missing.db')
+con = sl.connect('Lund_all.db')
 location_use=[]
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
