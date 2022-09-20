@@ -11,7 +11,8 @@ from sqlalchemy import column
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
-con = sl.connect('Lund_all.db')
+name='Lund_GRID_all.db'
+con = sl.connect('{}'.format(name))
 location_use=[]
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
@@ -100,17 +101,76 @@ plt.title("Procentage that is duplicate at different computing element")
 plt.xlabel("Computing center")
 
 plt.ylabel("Number of files")
-plt.show()
-"""
-print(not_a_duplicate)
-df2 = pd.DataFrame(not_a_duplicate,index=[0])
-print(df2)
+#plt.show()
+manager = plt.get_current_fig_manager()
+manager.window.showMaximized()
+#plt.show()
+figure = plt.gcf()
+figure.set_size_inches(19, 10)
+name=name.replace(".db","")
+if not os.path.exists("figures/{}/bar-plot".format(name)):
+    os.makedirs("figures/{}/bar-plot".format(name))
+plt.savefig("figures/{}/bar-plot/procentage.png".format(name),bbox_inches='tight', dpi=100)
+plt.close()
+df.to_csv('figures/{}/bar-plot/procentage.csv'.format(name), index=True)
 
-df2.plot(kind="bar",figsize=(10, 10))
+
+duplicate_2={}
+j_list=[]
+location_use=list(set(location_use))
+print(location_use)
+for i in duplicate_1:
+    #print(i)
+    data=(duplicate_1[i])
+    duplicate_2['index']=[]
+    #print(data2)
+    for j in location_use:
+        
+        duplicate_2['index'].append(j)
+        number_j=data.count(j)
+        if i==1:
+            string_to_write=str(i)+'st file'
+        elif i==2:
+            string_to_write=str(i)+'nd file'
+        elif i==3:
+            string_to_write=str(i)+'rd file'
+        else:
+            string_to_write=str(i)+'th file'
+        if string_to_write in duplicate_2:
+            #duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
+            duplicate_2[string_to_write].append(number_j)
+        else:
+            duplicate_2[string_to_write]=[]
+            duplicate_2[string_to_write].append(number_j)
+           
+            #duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
+            
+
+
+   
+import pandas as pd
+        
+df = pd.DataFrame(duplicate_2)
+print(df)
+df.set_index('index', drop=True, inplace=True)
+
+
+df.plot(kind="bar",figsize=(10, 10))
 plt.xticks(rotation='horizontal')
-plt.title("Duplicates procentage of all and computing element")
+plt.title("Number of duplicates at different computing element")
 
 plt.xlabel("Computing center")
 
 plt.ylabel("Number of files")
-plt.show()"""
+#plt.show()
+manager = plt.get_current_fig_manager()
+manager.window.showMaximized()
+#plt.show()
+figure = plt.gcf()
+figure.set_size_inches(19, 10)
+name=name.replace(".db","")
+if not os.path.exists("figures/{}/bar-plot".format(name)):
+    os.makedirs("figures/{}/bar-plot".format(name))
+plt.savefig("figures/{}/bar-plot/number_of.png".format(name),bbox_inches='tight', dpi=100)
+plt.close()
+df.to_csv('figures/{}/bar-plot/number_of.csv'.format(name), index=True)
