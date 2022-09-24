@@ -14,6 +14,10 @@ not_a_duplicate={}
 name='Lund_GRID_all.db'
 con = sl.connect('{}'.format(name))
 location_use=[]
+number_of_duplicates=[]
+number_of_files=[]
+number_of_first_duplicates=[]
+largest_dup_chain=0
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
@@ -21,9 +25,23 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         print(row[0])
         max_dup_number = con.execute("""
         SELECT MAX(duplicate) FROM {};""".format(row[0])).fetchone()[0]
+        number_of_duplicates_indatabase=con.execute('SELECT COUNT(*) FROM {} where duplicate is not Null;'.format(row[0])).fetchone()[0]
+        number_of_first_duplicates_indatabase=con.execute('SELECT COUNT(*) FROM {} where duplicate is 1;'.format(row[0])).fetchone()[0]
+        max_number = con.execute("""
+        SELECT MAX(id) FROM {};""".format(row[0])).fetchone()[0]
+        max__duplicate_number = con.execute("""
+        SELECT MAX(duplicate) FROM {};""".format(row[0])).fetchone()[0]
+        print(number_of_first_duplicates_indatabase)
         if max_dup_number==None:
             pass
         else:
+            #print(max_dup_number)
+            number_of_duplicates.append(number_of_duplicates_indatabase)
+            #print(max_number)
+            number_of_files.append(max_number)
+            number_of_first_duplicates.append(number_of_first_duplicates_indatabase)
+            if max_dup_number>largest_dup_chain:
+                largest_dup_chain=max_dup_number
             #print(max_dup_number)
 
             for i in range(1,max_dup_number+1):
@@ -93,24 +111,27 @@ df = pd.DataFrame(duplicate_2)
 print(df)
 df.set_index('index', drop=True, inplace=True)
 
-
+name=name.replace(".db","")
+name2=name.replace("_all","")
+name2=name.replace("_2","")
+name2=name2.replace("_"," ")
 df.plot(kind="bar",figsize=(10, 10))
 plt.xticks(rotation='horizontal')
-plt.title("Procentage that is duplicate at different computing element")
+plt.title("{}: Procentage that is duplicate at different computing element".format(name2))
 
 plt.xlabel("Computing center")
 
-plt.ylabel("Number of files")
+plt.ylabel("Procentage of files")
 #plt.show()
 manager = plt.get_current_fig_manager()
 manager.window.showMaximized()
 #plt.show()
 figure = plt.gcf()
 figure.set_size_inches(19, 10)
-name=name.replace(".db","")
+
 if not os.path.exists("figures/{}/bar-plot".format(name)):
     os.makedirs("figures/{}/bar-plot".format(name))
-plt.savefig("figures/{}/bar-plot/procentage.png".format(name),bbox_inches='tight', dpi=100)
+plt.savefig("figures/{}/bar-plot/{}_procentage.png".format(name,name2),bbox_inches='tight', dpi=100)
 plt.close()
 df.to_csv('figures/{}/bar-plot/procentage.csv'.format(name), index=True)
 
@@ -157,7 +178,7 @@ df.set_index('index', drop=True, inplace=True)
 
 df.plot(kind="bar",figsize=(10, 10))
 plt.xticks(rotation='horizontal')
-plt.title("Number of duplicates at different computing element")
+plt.title("{}: Number of duplicates at different computing element".format(name2))
 
 plt.xlabel("Computing center")
 
@@ -171,6 +192,16 @@ figure.set_size_inches(19, 10)
 name=name.replace(".db","")
 if not os.path.exists("figures/{}/bar-plot".format(name)):
     os.makedirs("figures/{}/bar-plot".format(name))
-plt.savefig("figures/{}/bar-plot/number_of.png".format(name),bbox_inches='tight', dpi=100)
+plt.savefig("figures/{}/bar-plot/{}_number_of.png".format(name,name2),bbox_inches='tight', dpi=100)
 plt.close()
 df.to_csv('figures/{}/bar-plot/number_of.csv'.format(name), index=True)
+
+print(name2)
+print("Number of files")
+print(sum(number_of_files))
+print("Number of duplicates")
+print(sum(number_of_duplicates))
+print("procentage of duplicates")
+print((sum(number_of_duplicates)/sum(number_of_files))*100)
+print("largest chain of duplicates")
+print(largest_dup_chain)
