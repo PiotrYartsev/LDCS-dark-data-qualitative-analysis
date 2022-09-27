@@ -11,9 +11,10 @@ from sqlalchemy import column
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
-name='SLAC_mc20_2.db'
+name='Lund_all.db'
 con = sl.connect('{}'.format(name))
 location_use=[]
+stuff111=[]
 number_of_duplicates=[]
 number_of_files=[]
 number_of_first_duplicates=[]
@@ -42,6 +43,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         if max_dup_number==None:
             pass
         else:
+            stuff111.append(row[0])
             #print(max_dup_number)
             number_of_duplicates.append(number_of_duplicates_indatabase)
             #print(max_number)
@@ -209,11 +211,28 @@ df.to_csv('figures/{}/bar-plot/number_of.csv'.format(name), index=True)
 print(name2)
 print("Number of files")
 print(sum(number_of_files))
+print(max(number_of_files))
 print("Number of duplicates")
 print(sum(number_of_duplicates))
+print(max(number_of_duplicates))
+number=number_of_duplicates.index(max(number_of_duplicates))
+
+print(stuff111[number])
+
+
+
 print("Number of files missing from Rucio")
 print(sum(number_of_missing_from_rucioc))
+
+
+print(max(number_of_missing_from_rucioc))
+
+number=number_of_missing_from_rucioc.index(max(number_of_missing_from_rucioc))
+
+print(stuff111[number])
+
 print("procentage of duplicates")
 print((sum(number_of_duplicates)/sum(number_of_files))*100)
+
 print("largest chain of duplicates")
 print(largest_dup_chain)
