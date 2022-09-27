@@ -6,8 +6,8 @@ from matplotlib.ticker import MultipleLocator
 from datetime import datetime
 import os
 import sqlite3 as sl
-
 from sqlalchemy import column
+
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
@@ -17,6 +17,7 @@ location_use=[]
 number_of_duplicates=[]
 number_of_files=[]
 number_of_first_duplicates=[]
+number_of_missing_from_rucioc=[]
 largest_dup_chain=[0,0]
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
@@ -25,10 +26,16 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         print(row[0])
         max_dup_number = con.execute("""
         SELECT MAX(duplicate) FROM {};""".format(row[0])).fetchone()[0]
+
         number_of_duplicates_indatabase=con.execute('SELECT COUNT(*) FROM {} where duplicate is not Null;'.format(row[0])).fetchone()[0]
+        
         number_of_first_duplicates_indatabase=con.execute('SELECT COUNT(*) FROM {} where duplicate is 1;'.format(row[0])).fetchone()[0]
+        
+        number_of_missing_from_rucio=con.execute('SELECT COUNT(*) FROM {} where ComputingElement is Null;'.format(row[0])).fetchone()[0]
+
         max_number = con.execute("""
         SELECT MAX(id) FROM {};""".format(row[0])).fetchone()[0]
+        
         max__duplicate_number = con.execute("""
         SELECT MAX(duplicate) FROM {};""".format(row[0])).fetchone()[0]
         print(number_of_first_duplicates_indatabase)
@@ -40,8 +47,11 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             #print(max_number)
             number_of_files.append(max_number)
             number_of_first_duplicates.append(number_of_first_duplicates_indatabase)
+            number_of_missing_from_rucioc.append(number_of_missing_from_rucio)
             if max_dup_number>largest_dup_chain[0]:
                 largest_dup_chain=[max_dup_number,row[0]]
+            
+            
             #print(max_dup_number)
 
             for i in range(1,max_dup_number+1):
@@ -201,6 +211,8 @@ print("Number of files")
 print(sum(number_of_files))
 print("Number of duplicates")
 print(sum(number_of_duplicates))
+print("Number of files missing from Rucio")
+print(sum(number_of_missing_from_rucioc))
 print("procentage of duplicates")
 print((sum(number_of_duplicates)/sum(number_of_files))*100)
 print("largest chain of duplicates")
