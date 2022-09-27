@@ -2,8 +2,10 @@ import adjust_time
 import add_duplicate_number
 import fix_many_batches_in_one
 import add_file_number
+import cleanfilesinmanylocations
 import os
 import shutil
+
 database='Lund_GRID_all.db'
 
 term_size = os.get_terminal_size()
@@ -15,6 +17,10 @@ adjust_time.add_time(database)
 print("\nRemoving duplicate batches")
 print('=' * term_size.columns)
 fix_many_batches_in_one.fix_many_batches_in_one(database)
+
+print("\nRemoving duplicate files")
+print('=' * term_size.columns)
+add_duplicate_number.add_duplicate_number(database)
 
 print("\nAdding file number")
 print('=' * term_size.columns)
