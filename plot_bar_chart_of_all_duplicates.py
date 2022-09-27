@@ -11,13 +11,13 @@ from sqlalchemy import column
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
-name='Lund_GRID_all.db'
+name='SLAC_mc20_2.db'
 con = sl.connect('{}'.format(name))
 location_use=[]
 number_of_duplicates=[]
 number_of_files=[]
 number_of_first_duplicates=[]
-largest_dup_chain=0
+largest_dup_chain=[0,0]
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
@@ -40,8 +40,8 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             #print(max_number)
             number_of_files.append(max_number)
             number_of_first_duplicates.append(number_of_first_duplicates_indatabase)
-            if max_dup_number>largest_dup_chain:
-                largest_dup_chain=max_dup_number
+            if max_dup_number>largest_dup_chain[0]:
+                largest_dup_chain=[max_dup_number,row[0]]
             #print(max_dup_number)
 
             for i in range(1,max_dup_number+1):

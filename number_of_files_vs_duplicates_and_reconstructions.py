@@ -1,4 +1,4 @@
-from multiprocessing.reduction import duplicate
+
 from tokenize import Number
 from matplotlib.axis import YAxis
 import matplotlib.pyplot as plt
@@ -10,84 +10,41 @@ import sqlite3 as sl
 
 from sqlalchemy import column
 from sympy import linsolve
-duplicate_1={}
-duplicate_2={}
-not_a_duplicate={}
-con = sl.connect('Lund_all_not_missing.db')
-location_use=[]
 
 
-max_number= 0
-filenumberuplicate=[]
-lengthoftable=[]
+name='Lund_GRID_all.db'
+con = sl.connect('{}'.format(name))
+max_file_number_list=[]
+procentage_of_duplicates=[]
+
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
     else:
-        #print(row[0])
-        max_dup_number = con.execute("""
-        SELECT MAX(file_number) from {};""".format(row[0])).fetchone()[0]
-        if max_dup_number > max_number:
-            max_number = max_dup_number
-print(max_number)
-"""
-for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
-    if row[0] == 'sqlite_sequence':
-        pass
-    else:
-        #print(row[0])
-        file_number = con.execute(""""""
-        SELECT file_number FROM {} WHERE duplicate IS NOT NULL;"""""".format(row[0])).fetchall()
-        if file_number==None:
+        print(row[0])
+        max_file_number=con.execute('Select id from {};'.format(row[0])).fetchall()
+        max_file_number=[i[0] for i in max_file_number]
+        max_file_number=len(max_file_number)
+        number_of_duplicates=con.execute('Select duplicate from {} where duplicate is not Null;'.format(row[0])).fetchall()
+        number_of_duplicates=[i[0] for i in number_of_duplicates]
+        number_of_duplicates=len(number_of_duplicates)
+        if max_file_number>10000:
             pass
         else:
-            file_number=[o[0] for o in file_number]
-            filenumberuplicate.extend(list(set(file_number)))
-            #print(set(file_number))
-"""
-for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
-    if row[0] == 'sqlite_sequence':
-        pass
-    else:
-        #print(row[0])
-        max_file_number= con.execute("""select MAX(file_number) from {};""".format(row[0])).fetchone()[0]
-        file_number = con.execute("""
-        SELECT file_number FROM {} WHERE duplicate IS NOT NULL;""".format(row[0])).fetchall()
-        if file_number==None:
-            pass
-        else:
-            lengthoftable.append(max_file_number)
-            file_number=[o[0] for o in file_number]
-            filenumberuplicate.append(len(file_number)/max_file_number)
-            #print(set(file_number))
-#print(filenumberuplicate)
-splits=np.linspace(1,max_number,1000)
-#print(splits)
-plot_list=[]
+            procentage_of_duplicates.append(number_of_duplicates/max_file_number)
+            max_file_number_list.append(max_file_number)
 
+print(len(max_file_number_list))
+print(len(procentage_of_duplicates))
+#arrange the data
+max_file_number_list,number_of_duplicates_list=zip(*sorted(zip(max_file_number_list,procentage_of_duplicates)))
 
-filenumberuplicate= [x for _,x in sorted(zip(lengthoftable,filenumberuplicate))]
-lengthoftable=(sorted(lengthoftable))
-
-
-#print(filenumberuplicate)
-#print(lengthoftable)
-"""
-for i in range(len(splits)):
-    number=float(splits[i])
-    j=[x for x in filenumberuplicate if not x > number]
-    h=len(j)
-    plot_list.append(h)
-"""
-plt.plot(lengthoftable,filenumberuplicate,".",label="Number of duplicates\nat filenumber\nless then limit", markersize=6, linewidth=0.5)
-plt.grid(linestyle='--',)
-plt.title("Procentage of duplicates for a sertain size of dataset",fontsize=20)
-plt.xlabel('Procentage of files in dataset',fontsize=15)
-plt.ylabel('Number of duplicates',   fontsize=15)
-plt.legend(loc='upper left',fontsize=15)
-plt.ylim(0)
-plt.xlim(0)
-#plt.yscale('log')
-manager = plt.get_current_fig_manager()
-manager.window.showMaximized()
+plt.plot(max_file_number_list,procentage_of_duplicates)
+plt.xlabel('Number of files')
+plt.ylabel('Number of duplicates')
+name=name.replace('.db','')
+name=name.replace('_all','')
+name=name.replace('_',' ')
+plt.title('Number of files vs number of duplicates in {}'.format(name))
 plt.show()
+
