@@ -118,7 +118,7 @@ for i in duplicate_1:
 
    
 import pandas as pd
-        
+print(duplicate_2)
 df = pd.DataFrame(duplicate_2)
 print(df)
 df.set_index('index', drop=True, inplace=True)
