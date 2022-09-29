@@ -24,24 +24,30 @@ from subprocess import PIPE, Popen
 
 
 name='Lund_GRID_all.db'
-con = sl.connect('C:\\Users\\MSI PC\\Desktop\\gitproj\\LDCS-dark-data-qualitative-analysis\\Lund_GRID_all.db')
+con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/Lund_GRID_all.db')
 
 
 not_rucio=[]
 rucio=[]
 batches=[]
+not_rucio_2=[]
+rucio_2=[]
+batches_2=[]
+
 
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
     else: 
+        print(row[0])
+
         x_values=[]
         y_values=[]
-        print(row[0])
-        duplicates=con.execute('SELECT ComputingElement FROM {} where duplicate is not Null'.format(row[0])).fetchall()
+        duplicates=con.execute("SELECT ComputingElement FROM {} where (duplicate is not Null and  IsRecon is 'False')".format(row[0])).fetchall()
         #print(len(duplicates))
         duplicates = [x[0] for x in duplicates]
         duplicates2=list(set(duplicates))
+       
         for n in duplicates2:
             y_values.append(duplicates.count(n))
             if n==None:
@@ -57,28 +63,79 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         name2=name.replace("_all","")
         name2=name.replace("_2","")
         name2=name2.replace("_"," ")
-        """
-        plt.bar(x_values,y_values)
-        plt.xticks(rotation='horizontal')
-        plt.title("{}: Procentage that is duplicate at different computing element".format(name2))
-
-        plt.xlabel("Computing center")
-        plt.grid()
-        plt.ylabel("Procentage of files")
-        #plt.show()
-        manager = plt.get_current_fig_manager()
-        manager.window.showMaximized()
-        #plt.show()
-        figure = plt.gcf()
-        figure.set_size_inches(19, 10)"""
         if "None" in x_values:
             rucio.append(y_values[x_values.index("Sum of all duplicates in Rucio")])
             not_rucio.append(y_values[x_values.index("None")])
             batches.append(row[0])
+        
+        x_values2=[]
+        y_values2=[]
+        print(row[0])
+        d2uplicates=con.execute("SELECT ComputingElement FROM {} where duplicate is not Null and IsRecon is 'True'".format(row[0])).fetchall()
+        #print(len(duplicates))
+        d2uplicates = [x[0] for x in d2uplicates]
+        d2uplicates2=list(set(d2uplicates))
+       
+        for n in d2uplicates2:
+            y_values2.append(d2uplicates.count(n))
+            if n==None:
+                n="None"
+            x_values2.append(n)
+        x_values2.append("Sum of all duplicates in Rucio")
+        if "None" in x_values2:
+            n=x_values2.index("None")
+            y_values2.append(sum(y_values2)-y_values2[n])
+        import pandas as pd
+
+        name=name.replace(".db","")
+        name2=name.replace("_all","")
+        name2=name.replace("_2","")
+        name2=name2.replace("_"," ")
+        if "None" in x_values2:
+            rucio_2.append(y_values2[x_values2.index("Sum of all duplicates in Rucio")])
+            not_rucio_2.append(y_values2[x_values2.index("None")])
+            batches_2.append(row[0])
 print("\n\n"+name)
+print(len(rucio))
+print(len(not_rucio))
+print(len(batches))
+print(len(rucio_2))
+print(len(not_rucio_2))
+print(len(batches_2))
+
+data={}
+data['index']=["100%","90-100%"]
 for n in range(len(rucio)):
-
-    print(batches[n]+" & " +str(rucio[n])+"  & "+str(not_rucio[n])+" & "+str(rucio[n]/(not_rucio[n])*100)+"%")
-
+    if rucio[n]/(not_rucio[n])==1:
+        if "100%" in data:
+            data["100%"]=data["100%"]+1
+        else:
+            data["100%"]=1
+    elif rucio[n]/(not_rucio[n])>0.9:
+        if "90-100%" in data:
+            data["90-100%"]=data["90-100%"]+1
+        else:
+            data["90-100%"]=1
+    else:
+        if "Not matching" in data:
+            data["Not matching"]=data["Not matching"]+1
+        else:
+            data["Not matching"]=1
+total_number_of_duplicates=sum(rucio)
+for key in data:
+    data[key]=data[key]/len(rucio)*100        
+    #print(batches[n]+" & " +str(rucio[n])+"  & "+str(not_rucio[n])+" & "+str(rucio[n]/(not_rucio[n])*100)+"%")
 print(sum(rucio))
 print(sum(not_rucio))
+courses = list(data.keys())
+values = list(data.values())
+  
+fig = plt.figure(figsize = (10, 5))
+ 
+# creating the bar plot
+plt.bar(courses, values, color ='tab:blue',
+        width = 0.4)
+ 
+plt.xlabel("Porcentage of duplicates in dataset %")
+plt.title("{}: How many datasets have equal number of duplicates in Rucio and not in Rucio".format(name2))
+plt.show()
