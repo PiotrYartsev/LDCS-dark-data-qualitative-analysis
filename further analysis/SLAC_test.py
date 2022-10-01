@@ -24,8 +24,8 @@ from subprocess import PIPE, Popen
 
 
 name='Lund_GRID_all.db'
-con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/Lund_GRID_all.db')
-
+#con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/{}'.format(name))
+con=sl.connect("C:\\\\Users\\\\MSI PC\\\\Desktop\\\\gitproj\\\\LDCS-dark-data-qualitative-analysis\\\\{}".format(name))
 
 not_rucio=[]
 rucio=[]
@@ -95,16 +95,10 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
             rucio_2.append(y_values2[x_values2.index("Sum of all duplicates in Rucio")])
             not_rucio_2.append(y_values2[x_values2.index("None")])
             batches_2.append(row[0])
-print("\n\n"+name)
-print(len(rucio))
-print(len(not_rucio))
-print(len(batches))
-print(len(rucio_2))
-print(len(not_rucio_2))
-print(len(batches_2))
+
 
 data={}
-data['index']=["100%","90-100%"]
+#data['index']=["100%","90-100%"]
 for n in range(len(rucio)):
     if rucio[n]/(not_rucio[n])==1:
         if "100%" in data:
@@ -124,7 +118,7 @@ for n in range(len(rucio)):
 total_number_of_duplicates=sum(rucio)
 for key in data:
     data[key]=data[key]/len(rucio)*100        
-    #print(batches[n]+" & " +str(rucio[n])+"  & "+str(not_rucio[n])+" & "+str(rucio[n]/(not_rucio[n])*100)+"%")
+    print(batches[n]+" & " +str(rucio[n])+"  & "+str(not_rucio[n])+" & "+str(rucio[n]/(not_rucio[n])*100)+"%")
 print(sum(rucio))
 print(sum(not_rucio))
 courses = list(data.keys())
