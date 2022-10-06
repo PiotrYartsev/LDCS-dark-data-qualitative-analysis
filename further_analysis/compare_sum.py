@@ -6,11 +6,11 @@ import itertools
 
 from subprocess import PIPE, Popen
 
-name='Lund_GRID_all.db'
+name='SLAC_mc20_2.db'
 con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/{}'.format(name))
 #con=sl.connect("C:\\\\Users\\\\MSI PC\\\\Desktop\\\\gitproj\\\\LDCS-dark-data-qualitative-analysis\\\\{}".format(name))
 
-
+"""
 
 def runner(input):
     for input2 in files_and_scopes[input]:
@@ -136,14 +136,19 @@ for row2 in (rows):
                 if key in statistics_dict:
                     statistics_dict[key]=statistics_dict[key]+1
                 else:
-                    statistics_dict[key]=1
-    
+                    statistics_dict[key]=1"""
+statistics_dict={'ARCCEJobID': 9, 'ComputingElement': 9, 'DataLocation': 9, 'FileCreationTime': 9, 'JobSubmissionTime': 9, 'RandomSeed1': 9, 'RandomSeed2': 9, 'RunNumber': 9, 'Walltime': 9}
 print(statistics_dict)
 #plot a bar chart
-import tkinter
+from tokenize import Number
+from matplotlib.axis import YAxis
 import matplotlib.pyplot as plt
 import numpy as np
-import operator
+from matplotlib.ticker import MultipleLocator
+from datetime import datetime
+import os
+import sqlite3 as sl
+from tqdm import *
 name=name.replace(".db","")
 name2=name.replace("_all","")
 name2=name.replace("_2","")
@@ -153,4 +158,5 @@ plt.xticks(range(len(statistics_dict)), list(statistics_dict.keys()),rotation=90
 plt.ylabel('Number of files')
 plt.title('{}: Number of files with different metadata'.format(name2))
 name2=name2.replace(" ","_")
-plt.savefig('{}_different_metadata.png'.format(name2))
+
+plt.savefig('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/further_analysis/plots/{}_different_metadata.png'.format(name2),bbox_inches='tight',dpi=300)
