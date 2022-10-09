@@ -9,7 +9,7 @@ import sqlite3 as sl
 from tqdm import *
 
 from sqlalchemy import column
-name='Lund_all.db'
+name='SLAC_mc20_2.db'
 con = sl.connect(name)
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
