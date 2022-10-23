@@ -1,17 +1,18 @@
-from tokenize import Number
-from matplotlib.axis import YAxis
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.ticker import MultipleLocator
-from datetime import datetime
 import os
 import sqlite3 as sl
+from datetime import datetime
+from tokenize import Number
+
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.axis import YAxis
+from matplotlib.ticker import MultipleLocator
 from sqlalchemy import column
 
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
-name='SLAC_mc20_2.db'
+name='Lund_all.db'
 con = sl.connect('{}'.format(name))
 location_use=[]
 stuff111=[]
@@ -106,18 +107,19 @@ for i in duplicate_1:
         else:
             string_to_write=str(i)+'th file'
         if string_to_write in duplicate_2:
-            duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
+            duplicate_2[string_to_write].append(number_j*100/(not_a_duplicate[j]+number_j))
             #duplicate_2[string_to_write].append(number_j)
         else:
             duplicate_2[string_to_write]=[]
             #duplicate_2[string_to_write].append(number_j)
            
-            duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
+            duplicate_2[string_to_write].append(number_j*100/(not_a_duplicate[j]+number_j))
             
 
 
    
 import pandas as pd
+
 print(duplicate_2)
 df = pd.DataFrame(duplicate_2)
 print(df)
@@ -182,6 +184,7 @@ for i in duplicate_1:
 
    
 import pandas as pd
+
 #print(duplicate_2)  
 df = pd.DataFrame(duplicate_2)
 print(df)
