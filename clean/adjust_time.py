@@ -1,9 +1,10 @@
-from audioop import add
 import os
+import sqlite3 as sl
 import time
+from audioop import add
 from datetime import datetime
 
-import sqlite3 as sl
+
 def add_time(database):
     con = sl.connect(database, check_same_thread=False)
 

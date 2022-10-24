@@ -1,14 +1,21 @@
-import adjust_time
-import add_duplicate_number
-import fix_many_batches_in_one
-import add_file_number
-import cleanfilesinmanylocations
 import os
 import shutil
 
-database='SLAC_mc20_2.db'
+import add_duplicate_number
+import add_file_number
+import adjust_time
+import cleanfilesinmanylocations
+import delete_test
+import fix_many_batches_in_one
+
+database='C:\\Users\\MSI PC\\Desktop\\gitproj\\LDCS-dark-data-qualitative-analysis\\Lund_GRID_all.db'
 
 term_size = os.get_terminal_size()
+
+
+print("Removing test and validation data from database")
+print('=' * term_size.columns)
+delete_test.delete_test(database)
 
 print("\nAdjusting time")
 print('=' * term_size.columns)
