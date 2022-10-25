@@ -3,7 +3,7 @@ import sqlite3 as sl
 import time
 from audioop import add
 from datetime import datetime
-
+from tqdm import *
 
 def add_time(database):
     con = sl.connect(database, check_same_thread=False)
@@ -31,7 +31,7 @@ def add_time(database):
                 if len(data)<1:
                     pass
                 else:
-                    for rows in data:
+                    for rows in tqdm(data):
                         if rows[0]==None:
                             pass
                         else:

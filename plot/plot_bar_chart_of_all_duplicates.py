@@ -2,6 +2,7 @@ import os
 import sqlite3 as sl
 from datetime import datetime
 from tokenize import Number
+import matplotlib.ticker as mtick
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -133,6 +134,7 @@ df.plot(kind="bar",figsize=(10, 10))
 plt.xticks(rotation='horizontal')
 plt.title("{}: Procentage that is duplicate at different computing element".format(name2))
 
+
 plt.xlabel("Computing center")
 
 plt.ylabel("Procentage of files")
@@ -142,6 +144,10 @@ manager.window.showMaximized()
 #plt.show()
 figure = plt.gcf()
 figure.set_size_inches(19, 10)
+#make y-axis start show precets
+plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
+
+
 
 if not os.path.exists("figures/{}/bar-plot".format(name)):
     os.makedirs("figures/{}/bar-plot".format(name))

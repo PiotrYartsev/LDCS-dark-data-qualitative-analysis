@@ -112,7 +112,7 @@ def fix_many_batches_in_one(dataset):
                     
                     data3=[]
                     if len(data2)!=len(data_test):
-                        print("                    "+len(test))
+                        print("                    "+str(len(test)))
                         print("                    "+"Different number of files",len(data2)," vs ",len(data_test))
                         
                     for a in range(len(data_test)):

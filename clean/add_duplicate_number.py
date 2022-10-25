@@ -108,7 +108,10 @@ def add_duplicate_number(dataset):
                         files=position
                         data=[]
                         for number2 in tqdm(files):
-                            get_data(number2,row)
+                            if number2==None:
+                                pass
+                            else:
+                                get_data(number2,row)
 
             
                         time_1_list=time_1
