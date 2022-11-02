@@ -8,7 +8,7 @@ import cleanfilesinmanylocations
 import delete_test
 import fix_many_batches_in_one
 
-database='Lund_all.db'
+database='/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/Lund_GRID_all.db'
 
 term_size = os.get_terminal_size()
 
@@ -17,7 +17,6 @@ term_size = os.get_terminal_size()
 print("Removing test and validation data from database")
 print('=' * term_size.columns)
 delete_test.delete_test(database)
-
 
 print("\nAdjusting time")
 print('=' * term_size.columns)
