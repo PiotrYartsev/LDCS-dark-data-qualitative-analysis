@@ -6,11 +6,11 @@ import itertools
 
 from subprocess import PIPE, Popen
 
-name='SLAC_mc20_2.db'
+name='Lund_delete_all.db'
 con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/{}'.format(name))
 #con=sl.connect("C:\\\\Users\\\\MSI PC\\\\Desktop\\\\gitproj\\\\LDCS-dark-data-qualitative-analysis\\\\{}".format(name))
 
-"""
+
 
 def runner(input):
     for input2 in files_and_scopes[input]:
@@ -136,8 +136,7 @@ for row2 in (rows):
                 if key in statistics_dict:
                     statistics_dict[key]=statistics_dict[key]+1
                 else:
-                    statistics_dict[key]=1"""
-statistics_dict={'ARCCEJobID': 9, 'ComputingElement': 9, 'DataLocation': 9, 'FileCreationTime': 9, 'JobSubmissionTime': 9, 'RandomSeed1': 9, 'RandomSeed2': 9, 'RunNumber': 9, 'Walltime': 9}
+                    statistics_dict[key]=1
 print(statistics_dict)
 #plot a bar chart
 from tokenize import Number

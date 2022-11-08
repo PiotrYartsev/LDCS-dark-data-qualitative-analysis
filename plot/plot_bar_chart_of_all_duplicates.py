@@ -13,8 +13,8 @@ from sqlalchemy import column
 duplicate_1={}
 duplicate_2={}
 not_a_duplicate={}
-name='Lund_all.db'
-con = sl.connect('{}'.format(name))
+name='Lund_delete_all.db'
+con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/datasets/all/Lund_delete_all.db')
 location_use=[]
 stuff111=[]
 number_of_duplicates=[]

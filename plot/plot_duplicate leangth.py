@@ -10,7 +10,7 @@ import sqlite3 as sl
 
 from sqlalchemy import column
 
-name='Lund_GRID_all.db'
+name='Lund_delete_onlyfull.db'
 con = sl.connect('{}'.format(name))
 
 largest_dup_chain=[0,0]
