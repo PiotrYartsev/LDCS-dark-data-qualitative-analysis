@@ -8,7 +8,7 @@ import cleanfilesinmanylocations
 import delete_test_all
 import fix_many_batches_in_one
 
-database='/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/datasets/everything/Lund_GRID_all.db'
+database='Lund_GRID_all.db'
 
 term_size = os.get_terminal_size()
 

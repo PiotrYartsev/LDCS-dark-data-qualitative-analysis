@@ -6,7 +6,7 @@ import itertools
 
 from subprocess import PIPE, Popen
 
-name='Lund_GRID_all.db'
+name='/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/datasets/onlyfull/Lund_GRID_delete_onlyfull.db'
 con = sl.connect('{}'.format(name))
 #con=sl.connect("C:\\\\Users\\\\MSI PC\\\\Desktop\\\\gitproj\\\\LDCS-dark-data-qualitative-analysis\\\\{}".format(name))
  

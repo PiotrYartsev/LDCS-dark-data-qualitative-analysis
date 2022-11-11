@@ -9,7 +9,7 @@ import sqlite3 as sl
 from tqdm import *
 
 from sqlalchemy import column
-name='Lund_delete_all.db'
+name='Lund_GRID_all.db'
 con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/datasets/all/Lund_delete_all.db')
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
