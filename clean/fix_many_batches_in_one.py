@@ -77,6 +77,7 @@ def fix_many_batches_in_one(dataset):
                     
                     if batch2.lower() in all_batches2:
                         print("                    "+"Table already exists")
+                        print("                    "+"Making another version")
                         max_id=con.execute("Select MAX(id) from {}".format(batch2)).fetchone()[0]
                         if max_id is None:
                             max_id=0

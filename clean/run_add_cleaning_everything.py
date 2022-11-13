@@ -7,10 +7,13 @@ import adjust_time
 import cleanfilesinmanylocations
 import delete_test_all
 import fix_many_batches_in_one
-
+import remove_empty
 database='Lund_GRID_all.db'
 
 term_size = os.get_terminal_size()
+print("\nRemoving empty tables")
+print("="*term_size.columns)
+remove_empty.remove_empty(database)
 
 print("\nAdjusting time")
 print('=' * term_size.columns)
@@ -27,7 +30,3 @@ add_file_number.add_file_number(database)
 print("\nAdding duplicate number")
 print('=' * term_size.columns)
 add_duplicate_number.add_duplicate_number(database)
-
-
-
-

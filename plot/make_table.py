@@ -9,8 +9,8 @@ import sqlite3 as sl
 from tqdm import *
 
 from sqlalchemy import column
-name='Lund.db'
-con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/datasets/all/Lund_delete_all.db')
+name='Lund_all_delete_all.db'
+con = sl.connect(name)
 count_number_one_duplicate_list=0
 count_all_duplicates_list=0
 
@@ -31,5 +31,3 @@ print('Total number of first duplicate: '+str(count_number_one_duplicate_list))
 print('Total number of all duplicates: '+str(count_all_duplicates_list))
 
 print('Precentage of one duplicate: '+str(round(count_number_one_duplicate_list/count_all_duplicates_list*100,1))+ '%')
-
-

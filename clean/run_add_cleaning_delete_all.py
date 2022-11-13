@@ -5,10 +5,13 @@ import add_duplicate_number
 import add_file_number
 import adjust_time
 import cleanfilesinmanylocations
-import delete_test_some
+import delete_test_all
 import fix_many_batches_in_one
 
-database='/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/SLAC_mc20_delete_onlyfull.db'
+database='Lund_GRID_all.db'
+#make a copy of the database
+shutil.copy(database, database[:-3]+'_delete_all.db')
+database=database[:-3]+'_delete_all.db'
 
 term_size = os.get_terminal_size()
 
@@ -16,7 +19,7 @@ term_size = os.get_terminal_size()
 
 print("Removing test and validation data from database")
 print('=' * term_size.columns)
-delete_test_some.delete_test_some(database)
+delete_test_all.delete_test_all(database)
 
 print("\nAdjusting time")
 print('=' * term_size.columns)
