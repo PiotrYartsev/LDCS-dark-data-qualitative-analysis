@@ -50,4 +50,4 @@ def change_name(dataset):
                         batches=batches+str(count+1)
                         print("          "+"The new name is: "+str(batches)+"\n")
                         con.execute("ALTER TABLE {} RENAME TO {};".format(row,batches))
-change_name('Lund_GRIDFTP_all_fixed.db')
+change_name('Lund_GRIDFTP_all_fixed_copy1.db')
