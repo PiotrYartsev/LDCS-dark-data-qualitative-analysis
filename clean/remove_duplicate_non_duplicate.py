@@ -19,7 +19,7 @@ def delte_copyies(dataset):
     #Retrive all tables from the database
     all_batches=con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall()
     all_batches=[a[0] for a in all_batches]
-    for row in tqdm(all_batches):
+    for row in all_batches:
         #If thea table is the table of tables, skip it
         if row == 'sqlite_sequence':
             pass
@@ -39,12 +39,18 @@ def delte_copyies(dataset):
             for key in all_data:
                 number=number+len(all_data[key])-1
             print("Removing {} duplicates".format(number))
+            #print the length of the table
+            number_of_rows=con.execute("Select count(*) from {};".format(row)).fetchall()[0][0]
+            print(number_of_rows)
             for key in tqdm(all_data):
+                #remove all but the first one
+                
                 if len(all_data[key])>1:
-                    #remove all but the first one
                     
                     for i in range(1,len(all_data[key])):
-                        con.execute("Delete from {} where id = {};".format(row,i))
+                        con.execute("Delete from {} where id={};".format(row,all_data[key][i]))
                         con.commit()
-
+            #print the length of the table
+            number_of_rows=con.execute("Select count(*) from {};".format(row)).fetchall()[0][0]
+            print(number_of_rows)
 delte_copyies('Lund_all_fixed_copy1.db')
