@@ -53,4 +53,3 @@ def delte_copyies(dataset):
             #print the length of the table
             number_of_rows=con.execute("Select count(*) from {};".format(row)).fetchall()[0][0]
             print(number_of_rows)
-delte_copyies('Lund_all_fixed_copy1.db')
