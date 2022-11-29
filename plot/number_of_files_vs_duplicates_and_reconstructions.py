@@ -12,7 +12,7 @@ from sqlalchemy import column
 from sympy import linsolve
 
 
-name='Lund_delete_onlyfull.db'
+name='Lund_all_fixed_delete_all.db'
 con = sl.connect('{}'.format(name))
 max_file_number_list=[]
 procentage_of_duplicates=[]

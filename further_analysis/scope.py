@@ -17,8 +17,8 @@ from sqlalchemy import column
 
 from subprocess import PIPE, Popen
 
-name='Lund_all.db'
-con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/datasets/everything/{}'.format(name))
+name='Lund_all_fixed_delete_all.db'
+con = sl.connect(name)
 #con=sl.connect("C:\\\\Users\\\\MSI PC\\\\Desktop\\\\gitproj\\\\LDCS-dark-data-qualitative-analysis\\\\{}".format(name))
 
 
