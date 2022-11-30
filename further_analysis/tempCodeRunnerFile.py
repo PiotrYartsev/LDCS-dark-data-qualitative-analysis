@@ -1,1 +1,2 @@
-Lund_GRIDFTP_all_fixed_delete_all.db
+
+print(data)"""
