@@ -10,127 +10,114 @@ from matplotlib.axis import YAxis
 from matplotlib.ticker import MultipleLocator
 from sqlalchemy import column
 
-duplicate_1={}
-duplicate_2={}
-not_a_duplicate={}
-name='Lund_all.db'
-con = sl.connect('/home/piotr/Desktop/LDCS-dark-data-qualitative-analysis/datasets/all/Lund_delete_all.db')
-location_use=[]
-stuff111=[]
-number_of_duplicates=[]
-number_of_files=[]
-number_of_first_duplicates=[]
-number_of_missing_from_rucioc=[]
-largest_dup_chain=[0,0]
+
+name='SLAC_mc20_delete_all.db'
+
+plt.rcParams.update({'font.size': 18})
+
+
+con = sl.connect(name)
+duplicate_locations={}
+non_duplicate_locations={}
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
         pass
     else:
         print(row[0])
-        max_dup_number = con.execute("""
-        SELECT MAX(duplicate) FROM {};""".format(row[0])).fetchone()[0]
-
-        number_of_duplicates_indatabase=con.execute('SELECT COUNT(*) FROM {} where duplicate is not Null;'.format(row[0])).fetchone()[0]
+        duplicate_list=con.execute('SELECT ComputingElement,duplicate FROM {} where duplicate is not Null;'.format(row[0])).fetchall()
+        duplicate_list=[x if x[0] is not None else ["none",x[1]] for x in duplicate_list]
+        duplicate_list=[[x[0].replace(" ",""),x[1]] for x in duplicate_list]
         
-        number_of_first_duplicates_indatabase=con.execute('SELECT COUNT(*) FROM {} where duplicate is 1;'.format(row[0])).fetchone()[0]
-        
-        number_of_missing_from_rucio=con.execute('SELECT COUNT(*) FROM {} where ComputingElement is Null;'.format(row[0])).fetchone()[0]
-
-        max_number = con.execute("""
-        SELECT MAX(id) FROM {};""".format(row[0])).fetchone()[0]
-        
-        max__duplicate_number = con.execute("""
-        SELECT MAX(duplicate) FROM {};""".format(row[0])).fetchone()[0]
-        print(number_of_first_duplicates_indatabase)
-        if max_dup_number==None:
-            pass
-        else:
-            stuff111.append(row[0])
-            #print(max_dup_number)
-            number_of_duplicates.append(number_of_duplicates_indatabase)
-            #print(max_number)
-            number_of_files.append(max_number)
-            number_of_first_duplicates.append(number_of_first_duplicates_indatabase)
-            number_of_missing_from_rucioc.append(number_of_missing_from_rucio)
-            if max_dup_number>largest_dup_chain[0]:
-                largest_dup_chain=[max_dup_number,row[0]]
-            
-            
-            #print(max_dup_number)
-
-            for i in range(1,max_dup_number+1):
-                #print(i)
-                data = con.execute("SELECT ComputingElement FROM {} WHERE duplicate is {}".format(row[0],i)).fetchall()
-                #print(len(data))
-                for rows1 in data:
-                    if rows1[0]==None:
-                        pass
-                    if not rows1[0]==None:
-                        location=str(rows1[0]).replace(" ","")
-                    else:
-                        location="None"
-                    if i in duplicate_1:
-                        duplicate_1[i].append(location)
-                    else:
-                        duplicate_1[i]=[]
-                        duplicate_1[i].append(location)
-                        
-            data3 = con.execute("SELECT ComputingElement FROM {}".format(row[0]))
-            for rows3 in data3:
-                if str(rows3[0]) in not_a_duplicate:
-                    not_a_duplicate[str(rows3[0])]+=1
+        for thing in duplicate_list:
+            if thing[0] in duplicate_locations:
+                if thing[1] in duplicate_locations[thing[0]]:
+                    duplicate_locations[thing[0]][thing[1]]+=1
                 else:
-                    not_a_duplicate[str(rows3[0])]=1
-            locations = con.execute("SELECT DISTINCT ComputingElement FROM {}".format(row[0],i)).fetchall()
+                    duplicate_locations[thing[0]][thing[1]]=1
+            else:
+                duplicate_locations[thing[0]]={}
+                duplicate_locations[thing[0]][thing[1]]=1
 
-            for stuff in locations:
-                location_use.append(str(stuff[0]).replace(" ",""))
 
-duplicate_2={}
-j_list=[]
-location_use=list(set(location_use))
-print(location_use)
-for i in duplicate_1:
-    #print(i)
-    data=(duplicate_1[i])
-    duplicate_2['index']=[]
-    #print(data2)
-    for j in location_use:
+
+        non_duplicate_list=con.execute('SELECT ComputingElement FROM {} where duplicate is Null;'.format(row[0])).fetchall()
+        non_duplicate_list=[x[0]for x in non_duplicate_list]
+        non_duplicate_list=[x if x is not None else "none" for x in non_duplicate_list]
+        non_duplicate_list=[x.replace(" ","") for x in non_duplicate_list]
+        for thing in non_duplicate_list:
+            if thing in non_duplicate_locations:
+                non_duplicate_locations[thing]+=1
+            else:
+                non_duplicate_locations[thing]=1
         
-        duplicate_2['index'].append(j)
-        number_j=data.count(j)
-        if i==1:
-            string_to_write=str(i)+'st file'
-        elif i==2:
-            string_to_write=str(i)+'nd file'
-        elif i==3:
-            string_to_write=str(i)+'rd file'
-        else:
-            string_to_write=str(i)+'th file'
-        if string_to_write in duplicate_2:
-            duplicate_2[string_to_write].append(number_j*100/(not_a_duplicate[j]+number_j))
-            #duplicate_2[string_to_write].append(number_j)
-        else:
-            duplicate_2[string_to_write]=[]
-            #duplicate_2[string_to_write].append(number_j)
-           
-            duplicate_2[string_to_write].append(number_j*100/(not_a_duplicate[j]+number_j))
-            
-
-
-   
+con.close()
 import pandas as pd
 
-print(duplicate_2)
-df = pd.DataFrame(duplicate_2)
-print(df)
-df.set_index('index', drop=True, inplace=True)
+print(non_duplicate_locations)
 
+
+all_locations={}
+for key in duplicate_locations:
+    sum = 0
+    for key2 in duplicate_locations[key]:
+        sum+=duplicate_locations[key][key2]
+    all_locations[key]=sum+non_duplicate_locations[key]
+print(all_locations)
+
+
+
+procentage_locations={}
+for key in duplicate_locations:
+    procentage_locations[key]={}
+    for key2 in duplicate_locations[key]:
+        procentage_locations[key][key2]=100*duplicate_locations[key][key2]/(all_locations[key])
+
+
+
+
+
+for key in duplicate_locations:
+    for key2 in list(duplicate_locations[key]):
+        if key2==1:
+            #make it say 1'st
+            duplicate_locations[key]['1\'st']=duplicate_locations[key][key2]
+            del duplicate_locations[key][key2]
+        elif key2==2:
+            duplicate_locations[key]['2\'nd']=duplicate_locations[key][key2]
+            del duplicate_locations[key][key2]
+        elif key2==3:
+            duplicate_locations[key]['3\'rd']=duplicate_locations[key][key2]
+            del duplicate_locations[key][key2]
+        else:
+            duplicate_locations[key][str(key2)+'\'th']=duplicate_locations[key][key2]
+            del duplicate_locations[key][key2]
+
+
+for key in procentage_locations:
+    for key2 in list(procentage_locations[key]):
+        if key2==1:
+            #make it say 1'st
+            procentage_locations[key]['1\'st']=procentage_locations[key][key2]
+            del procentage_locations[key][key2]
+        elif key2==2:
+            procentage_locations[key]['2\'nd']=procentage_locations[key][key2]
+            del procentage_locations[key][key2]
+        elif key2==3:
+            procentage_locations[key]['3\'rd']=procentage_locations[key][key2]
+            del procentage_locations[key][key2]
+        else:
+            procentage_locations[key][str(key2)+'\'th']=procentage_locations[key][key2]
+            del procentage_locations[key][key2]
+
+df1=pd.DataFrame(procentage_locations)
+df1=df1.fillna(0)
+df1=df1.astype(float)
+df1=df1.transpose()
 name=name.replace(".db","")
 name2=name.replace("_all","")
 name2=name.replace("_2","")
 name2=name2.replace("_"," ")
-df.plot(kind="bar",figsize=(10, 10))
+df1.plot(kind="bar",figsize=(10, 10))
 plt.xticks(rotation='horizontal')
 plt.title("{}: Procentage that is duplicate at different computing element".format(name2))
 
@@ -143,59 +130,27 @@ manager = plt.get_current_fig_manager()
 manager.window.showMaximized()
 #plt.show()
 figure = plt.gcf()
-figure.set_size_inches(19, 10)
+figure.set_size_inches(22, 10)
 #make y-axis start show precets
 plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
 
+#for each location in df print the sum off all procentages
+for i in range(0,len(df1.index)):
+    print(df1.index[i],df1.iloc[i].sum())
 
 
 if not os.path.exists("figures/{}/bar-plot".format(name)):
     os.makedirs("figures/{}/bar-plot".format(name))
+
+
 plt.savefig("figures/{}/bar-plot/{}_procentage.png".format(name,name2),bbox_inches='tight', dpi=100)
 plt.close()
-df.to_csv('figures/{}/bar-plot/procentage.csv'.format(name), index=True)
+df1.to_csv('figures/{}/bar-plot/procentage.csv'.format(name), index=True)
 
-
-duplicate_2={}
-j_list=[]
-location_use=list(set(location_use))
-print(location_use)
-for i in duplicate_1:
-    #print(i)
-    data=(duplicate_1[i])
-    duplicate_2['index']=[]
-    #print(data2)
-    for j in location_use:
-        
-        duplicate_2['index'].append(j)
-        number_j=data.count(j)
-        if i==1:
-            string_to_write=str(i)+'st file'
-        elif i==2:
-            string_to_write=str(i)+'nd file'
-        elif i==3:
-            string_to_write=str(i)+'rd file'
-        else:
-            string_to_write=str(i)+'th file'
-        if string_to_write in duplicate_2:
-            #duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
-            duplicate_2[string_to_write].append(number_j)
-        else:
-            duplicate_2[string_to_write]=[]
-            duplicate_2[string_to_write].append(number_j)
-           
-            #duplicate_2[string_to_write].append(number_j/not_a_duplicate[j])
-            
-
-
-   
-import pandas as pd
-
-#print(duplicate_2)  
-df = pd.DataFrame(duplicate_2)
-print(df)
-df.set_index('index', drop=True, inplace=True)
-
+df = pd.DataFrame(duplicate_locations)
+df = df.fillna(0)
+df = df.astype(int)
+df = df.transpose()
 
 df.plot(kind="bar",figsize=(10, 10))
 plt.xticks(rotation='horizontal')
@@ -209,29 +164,10 @@ manager = plt.get_current_fig_manager()
 manager.window.showMaximized()
 #plt.show()
 figure = plt.gcf()
-figure.set_size_inches(19, 10)
+figure.set_size_inches(22, 10)
 name=name.replace(".db","")
 if not os.path.exists("figures/{}/bar-plot".format(name)):
     os.makedirs("figures/{}/bar-plot".format(name))
 plt.savefig("figures/{}/bar-plot/{}_number_of.png".format(name,name2),bbox_inches='tight', dpi=100)
 plt.close()
 df.to_csv('figures/{}/bar-plot/number_of.csv'.format(name), index=True)
-
-print(name2)
-print("Number of files")
-print(sum(number_of_files))
-
-print("Number of duplicates")
-print(sum(number_of_duplicates))
-
-
-
-
-print("Number of files missing from Rucio")
-print(sum(number_of_missing_from_rucioc))
-
-print("procentage of duplicates")
-print((sum(number_of_duplicates)/sum(number_of_files))*100)
-
-print("largest chain of duplicates")
-print(largest_dup_chain)

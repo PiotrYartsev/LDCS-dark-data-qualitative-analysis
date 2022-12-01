@@ -7,10 +7,11 @@ from matplotlib.ticker import MultipleLocator
 from datetime import datetime
 import os
 import sqlite3 as sl
+import tqdm as tqdm
 
 from sqlalchemy import column
 
-name='Lund_delete_onlyfull.db'
+name='Lund_all_fixed_delete_all.db'
 con = sl.connect('{}'.format(name))
 
 largest_dup_chain=[0,0]
@@ -24,7 +25,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         file_numbers=con.execute('Select file_number from {};'.format(row[0])).fetchall()
         file_numbers=[i[0] for i in file_numbers]
         file_numbers=list(set(file_numbers))
-        for filenumber in file_numbers:
+        for filenumber in file_numbers: 
             data = con.execute("SELECT duplicate FROM {} WHERE file_number is {}".format(row[0],filenumber)).fetchall()
             data=[i[0] for i in data]
             max_value_for_duplicate=max(data)

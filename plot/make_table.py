@@ -9,7 +9,7 @@ import sqlite3 as sl
 from tqdm import *
 
 from sqlalchemy import column
-name='Lund_all_delete_all.db'
+name='Lund_GRIDFTP_all_fixed_delete_all.db'
 con = sl.connect(name)
 count_number_one_duplicate_list=0
 count_all_duplicates_list=0
