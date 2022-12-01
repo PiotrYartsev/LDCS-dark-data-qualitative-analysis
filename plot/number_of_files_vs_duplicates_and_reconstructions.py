@@ -22,29 +22,7 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
         pass
     else:
         print(row[0])
-        max_file_number=con.execute('Select id from {};'.format(row[0])).fetchall()
-        max_file_number=[i[0] for i in max_file_number]
-        max_file_number=len(max_file_number)
-        number_of_duplicates=con.execute('Select duplicate from {} where duplicate is not Null;'.format(row[0])).fetchall()
-        number_of_duplicates=[i[0] for i in number_of_duplicates]
-        number_of_duplicates=len(number_of_duplicates)
-        if max_file_number>10000:
-            pass
-        else:
-            procentage_of_duplicates.append(number_of_duplicates/max_file_number)
-            max_file_number_list.append(max_file_number)
+        check_if_reconstructions=con.execute("SELECT COUNT (*) FROM "+row[0]+" WHERE IsRecon is 'True'").fetchone()
+        check_if_reconstructions=check_if_reconstructions
 
-print(len(max_file_number_list))
-print(len(procentage_of_duplicates))
-#arrange the data
-max_file_number_list,number_of_duplicates_list=zip(*sorted(zip(max_file_number_list,procentage_of_duplicates)))
-
-plt.plot(max_file_number_list,procentage_of_duplicates)
-plt.xlabel('Number of files')
-plt.ylabel('Number of duplicates')
-name=name.replace('.db','')
-name=name.replace('_all','')
-name=name.replace('_',' ')
-plt.title('Number of files vs number of duplicates in {}'.format(name))
-plt.show()
-
+ 
