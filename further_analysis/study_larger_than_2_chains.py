@@ -29,7 +29,6 @@ for table in tables:
 
 stuff={}
 
-"""
 for row in (delete_all.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall()):
     if row[0] == 'sqlite_sequence':
         pass
@@ -51,4 +50,3 @@ for row in (delete_all.execute('SELECT name FROM sqlite_master WHERE type = "tab
                     if i is not None:
                         if data_location.count(i)>1:
                             print(data_location.count(i), row[0], file_number, i)
-                            """

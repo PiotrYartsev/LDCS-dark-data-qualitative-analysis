@@ -23,10 +23,10 @@ import itertools
 from subprocess import PIPE, Popen
 
 
-name='Lund_GRIDFTP_all_fixed_delete_all.db'
-con = sl.connect(name)
+name2='Lund_GRIDFTP_all_fixed_delete_all.db'
+con = sl.connect(name2)
 
-
+"""
 procentage_of_files=[]
 for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall():
     if row[0] == 'sqlite_sequence':
@@ -45,7 +45,16 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
 #print(procentage_of_files)
 # make a histogram
 n, bins, patches = plt.hist(x=procentage_of_files, bins=100, color="tab:blue", rwidth=0.85)
-print(bins)
+
+
+#get the highest bin
+highest_bin=max(n)
+print(highest_bin)
+#fit a decay curve to the data
+#def decay_curve(x):
+#largest bin*(fitting factor**x)
+    
+
 
 plt.xlabel('Distribution of duplicates in %')
 
@@ -60,6 +69,9 @@ maxfreq = n.max()
 
 # Set a clean upper y-axis limit.
 plt.ylim(ymax=np.ceil(maxfreq / 10) * 10 if maxfreq % 10 else maxfreq + 10)
+
+
+
 plt.savefig('figures/{}/bar-plot/procentage_of_duplicates.png'.format(name2))
 plt.close()
 """
@@ -73,14 +85,29 @@ for row in tqdm(con.execute('SELECT name FROM sqlite_master WHERE type = "table"
 
         number_of_duplciates2=con.execute("Select count(*) from {} where duplicate is not Null".format(row[0])).fetchall()[0][0]
 
-        if number_of_duplciates==0:
+        if number_of_duplciates2==0:
             pass
         else:
-            filenumbers2=con.execute("Select file_number from {} where duplicate is not Null".format(row[0])).fetchall()
-            for filenumber2 in filenumbers2:
-                #get largest duplicate
-                largest_duplicate=con.execute("Select max(duplicate) from {} where file_number={}".format(row[0],filenumber2[0])).fetchall()[0][0]
-                duplicate_length.append(largest_duplicate)
+            #check if there are duplicates
+            #print(row[0])
+            duplciates=con.execute("Select duplicate from {} where duplicate is not Null".format(row[0])).fetchall()
+            if len(duplciates)==0:
+                pass
+            else:
+                filenumbers2=con.execute("Select file_number from {} where duplicate > 0".format(row[0])).fetchall()
+                for filenumber2 in filenumbers2:
+                    #get largest duplicate
+                    largest_duplicate=con.execute("Select max(duplicate) from {} where file_number={}".format(row[0],filenumber2[0])).fetchall()[0][0]
+                    duplicate_length.append(largest_duplicate)
+                number_of_not_duplciates=con.execute("Select count(*) from {} where duplicate is Null".format(row[0])).fetchall()[0][0]
+
+                if number_of_not_duplciates==0:
+                    pass
+                else:
+                    #make a list of zeros for the files that are not duplicates
+                    for i in range(number_of_not_duplciates):
+                        duplicate_length.append(1)    
+
 duplicate_length_2={}
 
 for i in tqdm(duplicate_length):
@@ -88,15 +115,16 @@ for i in tqdm(duplicate_length):
         duplicate_length_2[i]+=1
     else:
         duplicate_length_2[i]=1
-
-plt.bar(duplicate_length_2.keys(), duplicate_length_2.values(), color="tab:blue")
+print(duplicate_length_2)
+plt.bar(duplicate_length_2.keys(),duplicate_length_2.values(),color='tab:blue')
 #make the x-ticks show the number of duplicates
 #make x-ticks be in steps of 2
-plt.xticks(np.arange(0, max(duplicate_length_2.keys())+1, 1.0))
+plt.xticks(np.arange(0, max(duplicate_length_2.keys())+1, 2.0))
+
+
 
 #start the x-axis at 2 minus the width of the first bar
-width = 0.35
-plt.xlim(left=2-width)
+#plt.xlim(0)
 
 
 
@@ -104,7 +132,5 @@ plt.xlim(left=2-width)
 plt.xlabel('Duplicate chain length')
 plt.ylabel('Frequency')
 plt.title('Duplicate chain length in files')
-plt.savefig('figures/{}/bar-plot/duplicate_length.png'.format(name2))
-
-
-"""
+plt.show()
+#plt.savefig('figures/{}/bar-plot/duplicate_length.png'.format(name2))

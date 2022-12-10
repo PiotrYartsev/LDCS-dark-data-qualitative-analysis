@@ -1,2 +1,2 @@
 
-print(data)"""
+duplicate_length_2={}
