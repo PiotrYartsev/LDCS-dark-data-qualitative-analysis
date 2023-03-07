@@ -8,8 +8,6 @@ from subprocess import PIPE, Popen
 delete_all_name='Lund_GRIDFTP_all_fixed_delete_all.db'
 delete_all = sl.connect('{}'.format(delete_all_name))
 
-
-
 """
 list_of_lists=[]
 
@@ -138,6 +136,7 @@ for key in compare_dict2:
             data[key]=len(compare_dict2[key])
 
 print(data)"""
+
 
 data={'ARCCEJobID': 53137, 'BatchID': 22, 'BeamEnergy': 2, 'ComputingElement': 4, 'DataLocation': 53137, 'DetectorVersion': 2, 'ElectronNumber': 2, 'FileCreationTime': 39063, 'Geant4BiasFactor': 2, 'InputFile': 53137, 'IsTriggerSkim': 2, 'JobSubmissionTime': 656, 'LdmxImage': 3, 'MomentumVectorX': 2, 'MomentumVectorY': 2, 'MomentumVectorZ': 2, 'PhysicsProcess': 2, 'RandomSeed1': 50521, 'RandomSeed2': 53137, 'RunNumber': 1636, 'SampleId': 2, 'Scope': 2, 'Walltime': 902, 'PileupFile': 5093}
 

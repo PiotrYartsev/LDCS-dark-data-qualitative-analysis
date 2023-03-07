@@ -23,7 +23,7 @@ import itertools
 from subprocess import PIPE, Popen
 
 
-name2='Lund_GRIDFTP_all_fixed_delete_all.db'
+name2='Lund_all_fixed_delete_all.db'
 con = sl.connect(name2)
 
 """
@@ -76,6 +76,7 @@ plt.savefig('figures/{}/bar-plot/procentage_of_duplicates.png'.format(name2))
 plt.close()
 """
 duplicate_length=[]
+duplicate_length_2={}
 for row in tqdm(con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall()):
     if row[0] == 'sqlite_sequence':
         pass
@@ -90,16 +91,16 @@ for row in tqdm(con.execute('SELECT name FROM sqlite_master WHERE type = "table"
             for filenumber2 in filenumbers2:
                 #get largest duplicate
                 largest_duplicate=con.execute("Select max(duplicate) from {} where file_number={}".format(row[0],filenumber2[0])).fetchall()[0][0]
-                duplicate_length.append(largest_duplicate)
+                if largest_duplicate==0 or largest_duplicate==1:
+                    pass
+                else:
+                    if largest_duplicate in duplicate_length_2:
+                        duplicate_length_2[largest_duplicate]+=1
+                    else:
+                        duplicate_length_2[largest_duplicate]=1
 
 
-duplicate_length_2={}
 
-for i in tqdm(duplicate_length):
-    if i in duplicate_length_2:
-        duplicate_length_2[i]+=1
-    else:
-        duplicate_length_2[i]=1
 print(duplicate_length_2)
 plt.bar(duplicate_length_2.keys(),duplicate_length_2.values(),color='tab:blue')
 #make the x-ticks show the number of duplicates
