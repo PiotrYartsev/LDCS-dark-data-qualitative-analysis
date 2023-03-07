@@ -81,32 +81,17 @@ for row in tqdm(con.execute('SELECT name FROM sqlite_master WHERE type = "table"
         pass
     else:
         #sheck if there are duplicates
-        
+        filenumbers2=con.execute("Select file_number from {} where duplicate > 0".format(row[0])).fetchall()
 
-        number_of_duplciates2=con.execute("Select count(*) from {} where duplicate is not Null".format(row[0])).fetchall()[0][0]
-
+        number_of_duplciates2=len(filenumbers2)
         if number_of_duplciates2==0:
             pass
         else:
-            #check if there are duplicates
-            #print(row[0])
-            duplciates=con.execute("Select duplicate from {} where duplicate is not Null".format(row[0])).fetchall()
-            if len(duplciates)==0:
-                pass
-            else:
-                filenumbers2=con.execute("Select file_number from {} where duplicate > 0".format(row[0])).fetchall()
-                for filenumber2 in filenumbers2:
-                    #get largest duplicate
-                    largest_duplicate=con.execute("Select max(duplicate) from {} where file_number={}".format(row[0],filenumber2[0])).fetchall()[0][0]
-                    duplicate_length.append(largest_duplicate)
-                number_of_not_duplciates=con.execute("Select count(*) from {} where duplicate is Null".format(row[0])).fetchall()[0][0]
+            for filenumber2 in filenumbers2:
+                #get largest duplicate
+                largest_duplicate=con.execute("Select max(duplicate) from {} where file_number={}".format(row[0],filenumber2[0])).fetchall()[0][0]
+                duplicate_length.append(largest_duplicate)
 
-                if number_of_not_duplciates==0:
-                    pass
-                else:
-                    #make a list of zeros for the files that are not duplicates
-                    for i in range(number_of_not_duplciates):
-                        duplicate_length.append(1)    
 
 duplicate_length_2={}
 
@@ -133,4 +118,5 @@ plt.xlabel('Duplicate chain length')
 plt.ylabel('Frequency')
 plt.title('Duplicate chain length in files')
 plt.show()
-#plt.savefig('figures/{}/bar-plot/duplicate_length.png'.format(name2))
+#plt.savefig('figures/{}/bar-plot/duplicate_length.png'.format(name2)#)
+#"""
