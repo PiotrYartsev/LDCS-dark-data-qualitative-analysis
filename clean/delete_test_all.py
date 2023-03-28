@@ -1,24 +1,20 @@
 import sqlite3 as sl
 
-from tqdm import *
+from tqdm import tqdm
 
-
+#define function
 def delete_test_all(database):
     con = sl.connect(database)
     for row in tqdm(con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall()):
+        #skip sqlite_sequence
         if row[0] == 'sqlite_sequence':
             pass
         else: 
-            #print(row[0])
-            
-            #number of element print()
-            one=(con.execute('SELECT COUNT(*) FROM {}'.format(row[0])).fetchall())
-            con.execute("DELETE FROM {} WHERE Scope LIKE ?;".format(row[0]), ('%validation%',))
-            con.execute("DELETE FROM {} WHERE Scope LIKE ?;".format(row[0]), ('%test%',))
-            two=(con.execute('SELECT COUNT(*) FROM {}'.format(row[0])).fetchall())
-            if one[0][0] != two[0][0]:
-                print('Deleted {} rows from {}'.format(one[0][0]-two[0][0], row[0]))
-            if two[0][0] == 0:
+            #get a list of all scopes
+            valid=con.execute("SELECT * FROM {} WHERE Scope LIKE ?;".format(row[0]), ('%valid%',))
+            test=con.execute("SELECT * FROM {} WHERE Scope LIKE ?;".format(row[0]), ('%test%',))
+            #if scopes are not empty, delete table
+            if valid and test:
                 print('Deleting table {}'.format(row[0]))
                 con.execute('DROP TABLE {}'.format(row[0]))
             con.commit()

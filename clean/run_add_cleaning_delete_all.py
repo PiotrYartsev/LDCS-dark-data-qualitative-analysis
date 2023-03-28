@@ -4,30 +4,27 @@ import shutil
 import add_duplicate_number
 import add_file_number
 import adjust_time
-import cleanfilesinmanylocations
 import delete_test_all
 import fix_many_batches_in_one
-import rename_tables
+
 import remove_duplicate_non_duplicate
+import sqlite3 as sl
 
 
 
 
-database='Lund_all_fixed_copy1.db'
+database='C:\\Users\\piotr\\Documents\\GitHub\\LDCS-dark-data-qualitative-analysis\\Lund_all.db'
+
 #make a copy of the database
-shutil.copy(database, database[:-9]+'_delete_all.db')
-database=database[:-9]+'_delete_all.db'
+shutil.copy(database, database[:-7]+'_delete_all.db')
+database=database[:-7]+'_delete_all.db'
 
 term_size = os.get_terminal_size()
 
-print("\nRenaming tables")
-print('=' * term_size.columns)
-rename_tables.change_name(database)
 
 print("Removing test and validation data from database")
 print('=' * term_size.columns)
 delete_test_all.delete_test_all(database)
-
 
 print("\nAdjusting time")
 print('=' * term_size.columns)
@@ -63,10 +60,6 @@ database=database[:-9]+'_delete_all.db'
 term_size = os.get_terminal_size()
 
 
-print("\nRenaming tables")
-print('=' * term_size.columns)
-rename_tables.change_name(database)
-
 print("Removing test and validation data from database")
 print('=' * term_size.columns)
 delete_test_all.delete_test_all(database)
@@ -93,3 +86,4 @@ add_duplicate_number.add_duplicate_number(database)
 
 
 
+#"""

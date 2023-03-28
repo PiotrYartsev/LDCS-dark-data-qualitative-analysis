@@ -12,7 +12,7 @@ from subprocess import PIPE, Popen
 
 
 
-
+#delete files that are exactly the same
 def delte_copyies(dataset):
     con = sl.connect(dataset, check_same_thread=False)
 
@@ -24,10 +24,11 @@ def delte_copyies(dataset):
         if row == 'sqlite_sequence':
             pass
         else:
-
             print("          "+row+"\n")
             all_data={}
+            #retrive data to compare
             retrive_file_location_and_batch_id=con.execute("Select id,DataLocation,file,Computingelement,BatchID from {};".format(row)).fetchall()
+            #create a dictionary with the data as key and the id as value
             for thing in retrive_file_location_and_batch_id:
                 id=thing[0]
                 text=str(thing[1])+str(thing[2])+str(thing[3])+str(thing[4])
@@ -35,6 +36,7 @@ def delte_copyies(dataset):
                     all_data[text].append(id)
                 else:
                     all_data[text]=[id]
+            #count the number of duplicates to print it, not really necessary, just for fun
             number=0
             for key in all_data:
                 number=number+len(all_data[key])-1
@@ -44,7 +46,6 @@ def delte_copyies(dataset):
             print(number_of_rows)
             for key in tqdm(all_data):
                 #remove all but the first one
-                
                 if len(all_data[key])>1:
                     
                     for i in range(1,len(all_data[key])):
