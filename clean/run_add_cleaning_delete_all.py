@@ -9,6 +9,10 @@ import delete_test_all
 import fix_many_batches_in_one
 import rename_tables
 import remove_duplicate_non_duplicate
+
+
+
+
 database='Lund_all_fixed_copy1.db'
 #make a copy of the database
 shutil.copy(database, database[:-9]+'_delete_all.db')
