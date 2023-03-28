@@ -54,7 +54,7 @@ def add_file_number(database):
                         #add the file numbers to the database
                         with con:
                             for n in range(len(add_file_number)):
-                                sql="update {} set file_number=({}) where id={};".format(row[0],add_file_number_2[n],n+1)
+                                sql="update {} set file_number=({}) where id={};".format(row[0],add_file_number[n],n+1)
                                 con.execute(sql)
                 except:
                     with con:

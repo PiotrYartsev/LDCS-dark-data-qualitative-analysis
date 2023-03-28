@@ -1,16 +1,6 @@
-from logging import raiseExceptions
-from tokenize import Number
 
-from tqdm import *
-
-from subprocess import PIPE, Popen
-
-from zlib import adler32
+from tqdm import tqdm
 import sqlite3 as sl
-
-from subprocess import PIPE, Popen
-
-
 
 
 def change_name(dataset):
@@ -24,6 +14,7 @@ def change_name(dataset):
         if row == 'sqlite_sequence':
             pass
         else:
+
             if "_" in row:
                 batches=con.execute("Select BatchID from {};".format(row)).fetchall()
                 batches=[a[0] for a in batches if a[0] != None]
@@ -34,6 +25,7 @@ def change_name(dataset):
                     
                     if batches[0].isnumeric():
                         batches="B"+batches
+                    
                     print(batches)
                     print("          "+"Tho old name is: "+row+"\n")
                     #change the name of the table
