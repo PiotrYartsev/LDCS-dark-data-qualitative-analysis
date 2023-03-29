@@ -8,8 +8,9 @@ import os
 import sqlite3 as sl
 from tqdm import *
 
+#a really, really bad way of diong this, but it works for now
 
-
+#the timestamp list for fiels that are not duplicates, files that are duplciate numebr 1, 2 etc
 time_no_problem=[]
 time_1_list=[]
 time_2_list=[]
@@ -61,7 +62,7 @@ time_47_list=[]
 
 
 
-
+#the file number list for fiels that are not duplicates, files that are duplciate numebr 1, 2 etc
 postion_duplicate_1=[]
 postion_duplicate_2=[]
 postion_duplicate_3=[]
@@ -121,11 +122,13 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
     else:
         try:
             print(row[0])
+            #get the range of filenumbers for each table
             max_file_number = con.execute("""
             SELECT MAX(file_number) FROM {};""".format(row[0])).fetchone()[0]
             min_file_number = con.execute("""
             SELECT MIN(file_number) FROM {};""".format(row[0])).fetchone()[0]
-            #print(max_file_number)
+            
+
             position=list(range(min_file_number,max_file_number+1))
             
 
@@ -187,11 +190,9 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                                     postion_duplicate_10.append(creation_time[k][1])
                                     time_10_list.append(time1)
                                 if n==11:
-                                    #print("11")
                                     postion_duplicate_11.append(creation_time[k][1])
                                     time_11_list.append(time1)
                                 if n==12:
-                                    #print("12")
                                     postion_duplicate_12.append(creation_time[k][1])
                                     time_12_list.append(time1)
                                 if n==13:
@@ -209,7 +210,6 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                                 if n==17:
                                     postion_duplicate_17.append(creation_time[k][1])
                                     time_17_list.append(time1)
-                                
                                 if n==18:
                                     postion_duplicate_18.append(creation_time[k][1])
                                     time_18_list.append(time1)
@@ -312,7 +312,6 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                 if len(creation_time2)==0:
                         pass
                 else:
-                    #print(len(creation_time2))
                     for k in range(len(creation_time2)):
                         position_regular.append(creation_time2[k][1])
                         
@@ -320,18 +319,6 @@ for row in con.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDE
                         time_no_problem.append(creation_time2[k][0])
                         
 
-            
-            
-            
-            
-
-            """
-            print("Time no problem",len(time_no_problem))
-            print("Time 1",len(time_1_list))
-            print("Time 2",len(time_2_list))
-            print("Time 3",len(time_3_list))
-            print("Time 4",len(time_4_list))
-            print("Time 5",len(time_5_list))"""
 
 
             

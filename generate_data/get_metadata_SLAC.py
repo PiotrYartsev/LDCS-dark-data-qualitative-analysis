@@ -8,15 +8,18 @@ import threading
 import itertools 
 from subprocess import PIPE, Popen
 
-
+#the following is for the SLAC GRIDFTP
 def runner(file):
+    #ahve to set the scope manually for the SLAC GRIDFTP 
     scope2="mc20"
+    #retrive the metadata from RuCIO for the file
     p = Popen("rucio get-metadata {}:{}".format(scope2,file), shell=True, stdout=PIPE, stderr=PIPE)
+    #L_1 is the output of the command and stderr is the error
     L_1, stderr = p.communicate()
-    #print(type(L_1))
     
-    L=L_1.decode("utf-8").split("\n")    
-    #print(L)
+    L=L_1.decode("utf-8").split("\n") 
+
+    #if the output is empty or very short, then the file is not in the database   
     if len(L)<2:    
         print(stderr.decode("utf-8").split("\n"))
     else:
