@@ -5,40 +5,13 @@ import threading
 import itertools 
 
 from subprocess import PIPE, Popen
-delete_all_name='Lund_GRIDFTP_all_fixed_delete_all.db'
-delete_all = sl.connect('{}'.format(delete_all_name))
 
 
-list_of_lists=[]
 
-for row in (delete_all.execute('SELECT name FROM sqlite_master WHERE type = "table" ORDER BY name').fetchall()):
-    if row[0] == 'sqlite_sequence':
-        pass
-    else:
-        file_number_dup_more_then2=delete_all.execute("SELECT file_number from {} where duplicate>2;".format(row[0])).fetchall()
-
-        print(row[0])
-        if len(file_number_dup_more_then2)>0:
-            file_number_dup_more_then2=[i[0] for i in file_number_dup_more_then2]
-
-            file_number_dup_more_then2=list(set(file_number_dup_more_then2))
-
-            #get the DataLocations for each file_number
-            for file_number in file_number_dup_more_then2:
-                data_location=delete_all.execute("SELECT file,Scope,ComputingElement,duplicate from {} where file_number={} and ComputingElement is not Null;".format(row[0],file_number)).fetchall()
-                #print(data_location)
-                if len(data_location)>1:
-                    list_of_lists.append(data_location)
-n=0
-for i in list_of_lists:
-    n=n+len(i)
-print(n)
-"""
-"""
 def runner(input):
     for input2 in input:
-        scope=input2[1].replace(' ','')
-        file=input2[0].replace(' ','')
+        scope=input2[0]
+        file=input2[1]
         p = Popen("rucio get-metadata {}:{}".format(scope,file), shell=True, stdout=PIPE, stderr=PIPE)
         L_1, stderr = p.communicate()
         #print(type(L_1))
@@ -67,6 +40,21 @@ def runner(input):
                 compare_dict2[key]=[compare_dict[key]]
 
 
+#open file C:\Users\piotr\Documents\GitHub\LDCS-dark-data-qualitative-analysis\list_of_duplicates.txt
+
+file_to_read=open('list_of_duplicates.txt','r')
+list_of_lists=[]
+n=0
+while n>10:
+    n+=1
+    for line in file_to_read:
+        line=line.split(',')
+        line=line[:-1]
+        list_of_lists.append(line)
+file_to_read.close()
+
+list_of_lists=[[a.split(':') for a in b] for b in list_of_lists]
+print(list_of_lists[0])
 
 compare_dict2={}
 files_to_sheck=list_of_lists
@@ -136,3 +124,4 @@ for key in compare_dict2:
             data[key]=len(compare_dict2[key])
 
 print(data)
+#"""
