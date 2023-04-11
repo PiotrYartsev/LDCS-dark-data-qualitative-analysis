@@ -57,7 +57,6 @@ def runner(input):
                 line=line.replace(" ","")
                 line=line.split(":",1)
                 if len(line)>1: 
-                    #print(line)
                     compare_dict[line[0]]=line[1]
         for key in compare_dict:
             if key in compare_dict2:
