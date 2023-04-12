@@ -33,8 +33,7 @@ n=0
 for i in list_of_lists:
     n=n+len(i)
 print(n)
-"""
-"""
+
 def runner(input):
     for input2 in input:
         scope=input2[1].replace(' ','')
