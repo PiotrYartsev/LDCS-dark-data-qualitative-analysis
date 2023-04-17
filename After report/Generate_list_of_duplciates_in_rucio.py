@@ -22,6 +22,7 @@ for row in tqdm(rowList):
     filenumbers=[a[0] for a in filenumbers]
     #print(len(filenumbers))
     repeated_filenumbers=[item for item in filenumbers if filenumbers.count(item) > 1]
+    repeated_filenumbers=list(set(repeated_filenumbers))
     for filenumber in tqdm(repeated_filenumbers):
         scope_and_file=con.execute('SELECT scope, file FROM '+row+' WHERE file_number='+str(filenumber)+' and ComputingElement is not NULL').fetchall()
         scope=[a[0] for a in scope_and_file]
